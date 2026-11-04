@@ -1,0 +1,1913 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}</style>
+<title>Little Love Notes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Answer a few sweet questions and get a gift basket built for your partner and your budget, with a love note to go with it.">
+<meta name="theme-color" content="#F8D7DA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Love Notes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap">
+<style>
+/* Layout: full-screen split. Left "shop window" shows the basket, right panel holds the words.
+   Phones stack them. One deliberate light look (blush stationery), so every color is set here. */
+:root {
+  color-scheme: light;
+  --blush: #F8D7DA;
+  --cream: #FFF8F0;
+  --rose: #D4919A;
+  --rose-ink: #A65663;
+  --wine: #7A2E3A;
+  --wine-soft: rgba(122, 46, 58, .72);
+  --wine-faint: rgba(122, 46, 58, .08);
+  --gold: #E8C07D;
+  --gold-deep: #C99A4E;
+  --petal: #FCE9EA;
+  --paper: #FFFDF8;
+  --line: rgba(212, 145, 154, .34);
+  --shadow: 0 14px 34px rgba(122, 46, 58, .10);
+  --font-script: "Great Vibes", "Snell Roundhand", "Apple Chancery", cursive;
+  --font-head: "Playfair Display", "Didot", "Bodoni 72", Georgia, serif;
+  --font-body: "Lora", "Iowan Old Style", "Palatino", Georgia, serif;
+  --spring: cubic-bezier(.34, 1.4, .64, 1);
+  --ease: cubic-bezier(.22, .9, .3, 1);
+  --gl: max(20px, env(safe-area-inset-left, 0px));
+  --gr: max(20px, env(safe-area-inset-right, 0px));
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { height: 100%; box-sizing: border-box; background: var(--cream); }
+body { height: 100%; margin: 0; overflow: hidden; background: var(--cream); color: var(--wine);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; padding: 0; }
+:focus-visible { outline: 2.5px solid var(--gold-deep); outline-offset: 3px; border-radius: 12px; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-family: var(--font-head); font-weight: 600; line-height: 1.15; text-wrap: balance; }
+.script { font-family: var(--font-script); font-weight: 400; line-height: 1.05; }
+.muted { color: var(--wine-soft); }
+.eyebrow { font-size: 12.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--rose-ink); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- App frame ---------- */
+.app { position: relative; height: 100%; }
+.screen { position: absolute; inset: 0; }
+.split { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); height: 100%; }
+.stage {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(90% 70% at 50% 42%, #FFF6F2 0%, var(--petal) 45%, var(--blush) 100%);
+  padding: 40px var(--gl) 40px var(--gl);
+}
+.stage::before { /* arched shop window */
+  content: ""; position: absolute; left: 50%; bottom: -2px; transform: translateX(-50%);
+  width: min(84%, 640px); height: 84%; border-radius: 999px 999px 0 0;
+  background: linear-gradient(180deg, rgba(255, 253, 248, .75), rgba(255, 253, 248, .25));
+  border: 1px solid rgba(255, 255, 255, .9); box-shadow: inset 0 0 0 10px rgba(255, 253, 248, .35);
+}
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.art { position: relative; width: min(100%, 76vh, 620px); aspect-ratio: 1; max-width: 100%; }
+.art > svg, .art > img { width: 100%; height: 100%; display: block; }
+.art img { border-radius: 28px; object-fit: contain; background: var(--paper); box-shadow: var(--shadow); }
+.stage-caption { position: relative; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.pill-chip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; font-size: 14.5px;
+  background: rgba(255, 253, 248, .86); border: 1px solid var(--line); box-shadow: 0 4px 12px rgba(122, 46, 58, .06); white-space: nowrap; }
+.pill-chip b { font-weight: 600; }
+.panel { position: relative; overflow-y: auto; overscroll-behavior: contain; background: var(--cream); display: flex; flex-direction: column; min-height: 0; }
+.panel-inner { width: 100%; max-width: 620px; margin: 0 auto; padding: 0 var(--gr) 0 var(--gl); flex: 1; display: flex; flex-direction: column; }
+.brand { display: flex; align-items: center; gap: 10px; padding-top: 28px; }
+.brand .script { font-size: 30px; }
+
+/* ---------- Buttons ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 30px; border-radius: 999px;
+  font-family: var(--font-head); font-weight: 600; font-size: 18px; transition: transform .25s var(--spring), opacity .2s, box-shadow .25s; }
+.btn:active { transform: scale(.96); }
+.btn-primary { color: var(--cream); background: linear-gradient(135deg, var(--rose), var(--wine)); border: 1.5px solid rgba(232, 192, 125, .85); box-shadow: 0 12px 26px rgba(122, 46, 58, .28); }
+.btn-primary:hover { box-shadow: 0 16px 32px rgba(122, 46, 58, .36); }
+.btn-ghost { color: var(--wine); background: var(--paper); border: 1.2px solid rgba(212, 145, 154, .6); box-shadow: 0 5px 14px rgba(122, 46, 58, .07); }
+.btn-gold { color: var(--wine); background: linear-gradient(90deg, #F3D9A4, var(--gold), #F3D9A4); border: 1px solid var(--gold-deep); box-shadow: 0 8px 20px rgba(201, 154, 78, .3); }
+.btn:disabled { opacity: .45; cursor: default; transform: none; box-shadow: none; }
+.btn-wide { width: 100%; }
+.link { display: inline-flex; align-items: center; gap: 7px; padding: 8px 10px; font-family: var(--font-head); font-style: italic; font-size: 16px;
+  text-decoration: underline; text-decoration-color: rgba(212, 145, 154, .7); text-underline-offset: 4px; }
+.icon-btn { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--paper);
+  border: 1px solid var(--line); box-shadow: 0 5px 14px rgba(122, 46, 58, .08); transition: transform .25s var(--spring); }
+.icon-btn:active { transform: scale(.92); }
+
+/* ---------- Welcome ---------- */
+.welcome-copy { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 26px; padding-block: 36px 40px; }
+.welcome-copy h1 { font-size: clamp(38px, 4.6vw, 60px); line-height: 1.06; }
+.welcome-copy h1 em { font-family: var(--font-script); font-style: normal; font-weight: 400; color: var(--rose-ink); font-size: 1.18em; }
+.lede { font-size: 18px; max-width: 46ch; }
+.how { display: grid; gap: 12px; counter-reset: how; list-style: none; padding: 0; margin: 0; }
+.how li { counter-increment: how; display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 20px;
+  background: var(--paper); border: 1px solid var(--line); }
+.how li::before { content: counter(how); width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-head); font-weight: 600; font-size: 18px; color: var(--cream); background: linear-gradient(135deg, var(--rose), var(--wine)); }
+.how b { font-family: var(--font-head); font-weight: 600; font-size: 17px; display: block; line-height: 1.25; }
+.how span { font-size: 14.5px; color: var(--wine-soft); }
+.cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+
+/* ---------- Quiz ---------- */
+.quiz-top { position: sticky; top: 0; z-index: 3; background: linear-gradient(180deg, var(--cream) 78%, rgba(255, 248, 240, 0)); padding-top: 20px; padding-bottom: 14px; display: grid; gap: 14px; }
+.quiz-row { display: flex; align-items: center; gap: 14px; }
+.chapters { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.chapter { display: grid; gap: 6px; }
+.chapter span { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--wine-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chapter.now span { color: var(--wine); }
+.chapter i { display: block; height: 6px; border-radius: 99px; background: var(--wine-faint); overflow: hidden; }
+.chapter i b { display: block; height: 100%; width: var(--fill, 0%); border-radius: 99px; background: linear-gradient(90deg, var(--rose), var(--wine)); transition: width .5s var(--ease); }
+.mini-basket { display: none; align-items: center; gap: 6px; padding: 3px 12px 3px 3px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); font-size: 14px; font-weight: 600; box-shadow: 0 5px 14px rgba(122, 46, 58, .08); }
+.mini-basket .thumb { width: 38px; height: 38px; border-radius: 50%; background: var(--petal); overflow: hidden; }
+.mini-basket .thumb svg { width: 100%; height: 100%; }
+.question { padding-block: 10px 28px; display: grid; gap: 26px; align-content: start; flex: 1; }
+.q-head { display: grid; gap: 10px; }
+.q-head h2 { font-size: clamp(30px, 3.2vw, 40px); }
+.q-head p { font-size: 16.5px; color: var(--wine-soft); }
+.q-why { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--wine-soft); padding: 12px 14px; border-radius: 16px; background: var(--petal); }
+.in-fwd { animation: inFwd .5s var(--ease) both; } .in-back { animation: inBack .5s var(--ease) both; }
+.quiz-foot { position: sticky; bottom: 0; z-index: 3; padding-top: 16px; padding-bottom: max(18px, env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(180deg, rgba(255, 248, 240, 0), var(--cream) 34%); display: flex; gap: 12px; align-items: center; }
+.quiz-foot .hint { font-size: 14px; color: var(--wine-soft); margin-right: auto; }
+.quiz-foot .btn { min-width: 200px; }
+
+/* Answer cards */
+.cards { display: grid; gap: 12px; }
+.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.card { position: relative; width: 100%; text-align: left; display: flex; align-items: center; gap: 14px; padding: 15px 18px; border-radius: 20px;
+  background: var(--paper); border: 1px solid var(--line); box-shadow: 0 4px 12px rgba(122, 46, 58, .05);
+  transition: transform .4s var(--spring), box-shadow .3s, border-color .3s, background .3s; }
+.card:hover { border-color: var(--rose); }
+.card:active { transform: scale(.97); }
+.card.tile { flex-direction: column; justify-content: center; text-align: center; gap: 8px; min-height: 118px; padding: 18px 10px; }
+.card .em { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 14px; background: var(--petal); font-size: 25px; line-height: 1; }
+.card.tile .em { width: 52px; height: 52px; border-radius: 50%; font-size: 28px; }
+.card .sw { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--paper); box-shadow: 0 0 0 1px var(--line), 0 3px 8px rgba(122, 46, 58, .18); }
+.card .t { font-family: var(--font-head); font-weight: 600; font-size: 18px; line-height: 1.2; }
+.card.tile .t { font-size: 16.5px; }
+.card .s { font-size: 14px; color: var(--wine-soft); line-height: 1.35; }
+.card.tile .s { font-size: 13px; }
+.card[aria-pressed="true"] { background: linear-gradient(135deg, var(--blush), #F6CDD3); border: 2px solid var(--gold);
+  box-shadow: 0 0 0 4px rgba(232, 192, 125, .22), 0 8px 20px rgba(232, 192, 125, .45); transform: scale(1.015); }
+.card[aria-pressed="true"] .em { background: rgba(255, 253, 248, .75); }
+.card .badge { position: absolute; top: -9px; right: -9px; opacity: 0; transform: scale(.2); transition: transform .45s var(--spring), opacity .2s; }
+.card[aria-pressed="true"] .badge { opacity: 1; transform: scale(1); }
+.field { display: flex; align-items: flex-start; gap: 12px; padding: 18px 20px; border-radius: 20px; background: var(--paper); border: 1px solid var(--line); transition: border-color .3s, box-shadow .3s; }
+.field:focus-within { border: 2px solid var(--gold); box-shadow: 0 0 0 4px rgba(232, 192, 125, .2), 0 8px 20px rgba(232, 192, 125, .35); }
+.field svg { flex: none; margin-top: 6px; }
+.field input, .field textarea { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 19px; resize: none; line-height: 1.45; }
+.field input::placeholder, .field textarea::placeholder { color: var(--rose-ink); opacity: .7; font-style: italic; }
+.chips-label { font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--wine-soft); margin-bottom: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 9px 15px; border-radius: 999px; font-size: 15px; background: var(--paper); border: 1px solid var(--line); transition: transform .3s var(--spring), background .25s, border-color .25s; }
+.chip:active { transform: scale(.94); }
+.chip[aria-pressed="true"] { background: linear-gradient(135deg, var(--blush), #F6CDD3); border: 1.5px solid var(--gold); }
+.style-box { padding: 26px 24px; border-radius: 24px; background: var(--paper); border: 1px solid var(--line); display: grid; gap: 24px; text-align: center; }
+.style-box .big { font-size: 44px; line-height: 1; }
+.style-box h3 { font-size: 23px; margin-top: 8px; }
+.range { --val: 60%; width: 100%; height: 46px; margin: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: grab; }
+.range::-webkit-slider-runnable-track { height: 14px; border-radius: 999px; border: 1px solid var(--line); background: linear-gradient(90deg, var(--rose), var(--wine)) 0 / var(--val) 100% no-repeat, var(--cream); }
+.range::-moz-range-track { height: 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--cream); }
+.range::-moz-range-progress { height: 14px; border-radius: 999px; background: linear-gradient(90deg, var(--rose), var(--wine)); }
+.range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 46px; height: 46px; margin-top: -17px; border-radius: 50%;
+  background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath fill='%237A2E3A' d='M12 6.2C10.6 2.2 6.5 1 4 2.6 1.1 4.4 1 8.6 3.6 11.5 6 14.2 9.4 16.6 12 20.6c2.6-4 6-6.4 8.4-9.1 2.6-2.9 2.5-7.1-.4-8.9C17.5 1 13.4 2.2 12 6.2z'/%3E%3C/svg%3E") center / 22px no-repeat;
+  border: 2px solid var(--gold); box-shadow: 0 4px 10px rgba(122, 46, 58, .22); }
+.range::-moz-range-thumb { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
+  background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath fill='%237A2E3A' d='M12 6.2C10.6 2.2 6.5 1 4 2.6 1.1 4.4 1 8.6 3.6 11.5 6 14.2 9.4 16.6 12 20.6c2.6-4 6-6.4 8.4-9.1 2.6-2.9 2.5-7.1-.4-8.9C17.5 1 13.4 2.2 12 6.2z'/%3E%3C/svg%3E") center / 20px no-repeat; }
+.range-labels { display: flex; justify-content: space-between; font-family: var(--font-head); font-weight: 600; font-size: 15px; color: var(--wine-soft); margin-top: 6px; }
+
+/* Live preview card on the stage */
+.live { position: relative; display: grid; gap: 8px; justify-items: center; text-align: center; }
+.live .script { font-size: 34px; }
+.art .empty-hint { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); font-size: 15px; font-style: italic; color: var(--wine-soft); background: rgba(255, 253, 248, .85); padding: 6px 14px; border-radius: 999px; white-space: nowrap; }
+.pop-in { animation: popIn .6s var(--spring) both; }
+
+/* ---------- Loading ---------- */
+#loading { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px;
+  background: radial-gradient(80% 70% at 50% 40%, #FFF6F2, var(--petal) 50%, var(--blush)); padding-inline: var(--gl) var(--gr); }
+#loading .art { width: min(84vw, 58vh, 520px); }
+#loading .art .it { animation: drop .7s var(--spring) both; }
+#loading h2 { font-style: italic; font-size: clamp(24px, 3vw, 32px); min-height: 1.4em; }
+
+/* ---------- Results ---------- */
+.results-stage { position: sticky; top: 0; height: 100%; }
+.art-tabs { position: relative; display: inline-flex; padding: 4px; border-radius: 999px; background: rgba(255, 253, 248, .9); border: 1px solid var(--line); margin-bottom: 10px; }
+.art-tabs button { padding: 7px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; color: var(--wine-soft); }
+.art-tabs button[aria-selected="true"] { background: var(--wine); color: var(--cream); }
+.ai-row { position: relative; display: grid; gap: 8px; justify-items: center; margin-top: 8px; text-align: center; }
+.ai-note { font-size: 13.5px; color: var(--wine-soft); max-width: 42ch; }
+.painting { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; border-radius: 28px;
+  background: rgba(255, 248, 240, .82); backdrop-filter: blur(3px); }
+.painting .brush { font-size: 46px; animation: wiggle 1.4s ease-in-out infinite; }
+.res { display: grid; gap: 34px; padding-block: 34px max(40px, env(safe-area-inset-bottom, 0px)); }
+.res > * { animation: rise .7s var(--ease) both; }
+.res > *:nth-child(2) { animation-delay: .08s; } .res > *:nth-child(3) { animation-delay: .16s; } .res > *:nth-child(4) { animation-delay: .24s; } .res > *:nth-child(5) { animation-delay: .32s; }
+.res-head { display: grid; gap: 12px; }
+.res-head h1 { font-size: clamp(36px, 4vw, 52px); }
+.res-head .lede { font-size: 17px; }
+.summary { display: grid; gap: 10px; padding: 18px 20px; border-radius: 22px; background: var(--paper); border: 1px solid var(--line); }
+.summary-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 18px; }
+.summary-row .big { font-family: var(--font-head); font-weight: 600; font-size: 30px; }
+.summary-row .muted { font-size: 15px; }
+.meter { height: 10px; border-radius: 999px; background: var(--petal); overflow: hidden; }
+.meter i { display: block; height: 100%; width: var(--used); border-radius: 999px; background: linear-gradient(90deg, var(--gold), #F3D9A4, var(--gold)); animation: grow 1.1s .5s var(--ease) both; }
+.sec { display: grid; gap: 16px; }
+.sec-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.sec-title h2 { font-size: 27px; }
+.sec-title .script { font-size: 28px; color: var(--rose-ink); }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.item { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 16px 12px 12px; border-radius: 20px; background: var(--paper); border: 1px solid var(--line); }
+.item .ic { width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center; font-size: 30px; background: var(--petal); }
+.item .nm { font-weight: 500; line-height: 1.3; }
+.item .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.item .tags span { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--petal); color: var(--rose-ink); }
+.item .pr { font-family: var(--font-head); font-weight: 600; font-size: 18px; }
+.item.container { background: transparent; border-style: dashed; }
+.item.container .ic { background: rgba(232, 192, 125, .25); }
+.gifts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.gift { position: relative; display: grid; gap: 8px; align-content: start; padding: 18px; border-radius: 22px; background: var(--paper); border: 1px solid var(--line); }
+.gift.best { border: 2px solid var(--gold); box-shadow: 0 10px 24px rgba(232, 192, 125, .3); }
+.gift .flag { justify-self: start; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: linear-gradient(90deg, #F3D9A4, var(--gold)); }
+.gift h3 { font-size: 18px; }
+.gift .pr { font-family: var(--font-head); font-style: italic; font-weight: 600; color: var(--rose-ink); }
+.gift p { font-size: 14px; color: var(--wine-soft); line-height: 1.45; }
+.why-best { font-size: 15.5px; padding: 16px 18px; border-radius: 18px; background: var(--petal); line-height: 1.6; }
+.letter { position: relative; padding: 26px; border-radius: 24px; background: var(--paper); box-shadow: var(--shadow); }
+.letter::before { content: ""; position: absolute; inset: 8px; border: 1px dashed rgba(232, 192, 125, .8); border-radius: 17px; pointer-events: none; }
+.letter p { font-style: italic; font-size: 17.5px; line-height: 1.8; margin-top: 10px; }
+.letter .sign { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; position: relative; }
+.letter .sign .script { font-size: 28px; color: var(--rose-ink); }
+.tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tip { padding: 18px; border-radius: 22px; background: var(--paper); border: 1px solid var(--line); display: grid; gap: 8px; align-content: start; }
+.tip p { font-size: 15.5px; line-height: 1.6; }
+.mini { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; background: var(--cream); border: 1px solid var(--line); transition: transform .25s var(--spring); }
+.mini:active { transform: scale(.94); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.actions .btn { flex: 1 1 180px; }
+
+/* ---------- Saved sheet & toast ---------- */
+.sheet-layer { position: absolute; inset: 0; z-index: 30; }
+.backdrop { position: absolute; inset: 0; background: rgba(122, 46, 58, .3); opacity: 0; transition: opacity .3s; }
+.sheet { position: absolute; top: 0; right: 0; bottom: 0; width: min(520px, 100%); display: flex; flex-direction: column; background: var(--cream);
+  box-shadow: -20px 0 50px rgba(122, 46, 58, .2); transform: translateX(105%); transition: transform .5s var(--ease); }
+.sheet-open .sheet { transform: none; } .sheet-open .backdrop { opacity: 1; }
+.sheet-head { display: flex; justify-content: space-between; align-items: center; padding: 26px var(--gr) 10px var(--gl); }
+.sheet-head .script { font-size: 44px; }
+.sheet-body { flex: 1; overflow-y: auto; padding: 8px var(--gr) max(30px, env(safe-area-inset-bottom, 0px)) var(--gl); display: grid; gap: 14px; align-content: start; }
+.fav { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px; padding: 14px; border-radius: 22px; background: var(--paper); border: 1px solid var(--line); }
+.fav .thumb { width: 92px; height: 92px; border-radius: 18px; background: var(--petal); overflow: hidden; }
+.fav .thumb svg { width: 100%; height: 100%; }
+.fav h3 { font-size: 19px; }
+.fav .btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.fav-full { grid-column: 1 / -1; white-space: pre-wrap; font-size: 14px; line-height: 1.55; padding: 14px; border-radius: 16px; background: var(--petal); overflow-wrap: anywhere; }
+.empty { text-align: center; padding: 14% 20px; display: grid; gap: 12px; justify-items: center; }
+.toast { position: absolute; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom, 0px)); z-index: 50; transform: translate(-50%, 30px); opacity: 0; pointer-events: none;
+  width: max-content; max-width: calc(100% - 40px); padding: 13px 22px; border-radius: 999px; background: var(--wine); color: var(--cream); font-size: 15px;
+  box-shadow: 0 12px 28px rgba(122, 46, 58, .35); transition: transform .45s var(--spring), opacity .3s; display: flex; align-items: center; gap: 8px; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.copy-box { width: 100%; min-height: 200px; padding: 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--paper); font-size: 14px; }
+.preview-layer { position: absolute; inset: 0; z-index: 40; display: grid; place-items: center; padding: 24px var(--gr) 24px var(--gl); background: rgba(122, 46, 58, .35); }
+.preview-card { width: min(100%, 460px); padding: 18px; border-radius: 30px; background: radial-gradient(90% 70% at 50% 42%, #FFF6F2, var(--petal) 60%, var(--blush)); box-shadow: 0 30px 60px rgba(122, 46, 58, .3); display: grid; gap: 10px; justify-items: center; text-align: center; }
+
+/* ---------- Motion ---------- */
+@keyframes inFwd { from { transform: translateX(40px); opacity: .15; } to { transform: none; opacity: 1; } }
+@keyframes inBack { from { transform: translateX(-40px); opacity: .15; } to { transform: none; opacity: 1; } }
+@keyframes rise { from { transform: translateY(20px); opacity: .2; } to { transform: none; opacity: 1; } }
+@keyframes grow { from { width: 0; } }
+@keyframes popIn { from { transform: scale(.94); opacity: .3; } to { transform: none; opacity: 1; } }
+@keyframes drop { from { transform: translateY(-260px); opacity: 0; } to { opacity: 1; } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(12deg); } }
+.screen-in { animation: popIn .5s var(--ease) both; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ---------- Phones & small tablets ---------- */
+@media (max-width: 919px) {
+  .split { display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; }
+  .stage { flex: none; padding: 18px var(--gr) 22px var(--gl); }
+  .stage::before { width: 92%; height: 88%; }
+  .art { width: min(100%, 360px); }
+  .panel { overflow: visible; flex: 1 0 auto; border-radius: 30px 30px 0 0; margin-top: -26px; box-shadow: 0 -10px 30px rgba(122, 46, 58, .08); }
+  .brand { padding-top: 22px; }
+  .welcome-copy { padding-block: 18px 28px; gap: 20px; justify-content: flex-start; }
+  .welcome-copy .cta-row { position: sticky; bottom: 0; padding-block: 12px max(14px, env(safe-area-inset-bottom, 0px)); background: linear-gradient(180deg, rgba(255,248,240,0), var(--cream) 30%); }
+  .welcome-copy .cta-row .btn { flex: 1; }
+  #quiz .split { display: block; overflow: hidden; }
+  #quiz .stage { display: none; }
+  #quiz .panel { height: 100%; overflow-y: auto; margin: 0; border-radius: 0; box-shadow: none; }
+  .mini-basket { display: inline-flex; }
+  .chapter span { display: none; }
+  .chapters { gap: 6px; }
+  #welcome .art { width: min(100%, 300px); }
+  .quiz-foot .btn { flex: 1; min-width: 0; }
+  .quiz-foot .hint { display: none; }
+  .results-stage { position: relative; height: auto; }
+  .gifts { grid-template-columns: 1fr; }
+  .tips { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+  .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .item { grid-template-columns: 46px minmax(0, 1fr) auto; gap: 12px; }
+  .item .ic { width: 46px; height: 46px; font-size: 25px; border-radius: 14px; }
+}
+@media (min-width: 920px) and (max-height: 760px) {
+  .welcome-copy { gap: 18px; } .welcome-copy h1 { font-size: 44px; } .how li { padding: 10px 14px; }
+}
+</style>
+
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="wineFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D4919A"/><stop offset="1" stop-color="#7A2E3A"/></linearGradient>
+    <linearGradient id="heartFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7A3AC"/><stop offset=".5" stop-color="#D4919A"/><stop offset="1" stop-color="#7A2E3A"/></linearGradient>
+    <path id="heartPath" d="M12 6.2C10.6 2.2 6.5 1 4 2.6 1.1 4.4 1 8.6 3.6 11.5 6 14.2 9.4 16.6 12 20.6c2.6-4 6-6.4 8.4-9.1 2.6-2.9 2.5-7.1-.4-8.9C17.5 1 13.4 2.2 12 6.2z"/>
+  </defs>
+</svg>
+
+<div class="app" id="app">
+
+  <!-- Welcome -->
+  <section class="screen" id="welcome" aria-label="Welcome">
+    <div class="split">
+      <div class="stage">
+        <canvas id="hearts-canvas" aria-hidden="true"></canvas>
+        <div class="art" id="welcome-art"></div>
+        <div class="stage-caption" id="welcome-caption"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="brand">
+            <svg width="22" height="20" viewBox="0 0 24 22" aria-hidden="true"><use href="#heartPath" fill="url(#wineFill)"/></svg>
+            <span class="script">Little Love Notes</span>
+          </div>
+          <div class="welcome-copy">
+            <h1>Let's find something <em>they'll love.</em></h1>
+            <p class="lede muted">Tell us about your partner and your budget. We'll fill a gift basket just for them, tell you why each piece fits, and add a love note to go with it.</p>
+            <ol class="how">
+              <li><div><b>Answer 12 quick questions</b><span>About two minutes. Mostly taps.</span></div></li>
+              <li><div><b>Get a basket built for your budget</b><span>5 to 10 items with prices, and a picture of it.</span></div></li>
+              <li><div><b>Make it romantic</b><span>A love note to finish, a date idea and how to wrap it.</span></div></li>
+            </ol>
+            <div class="cta-row">
+              <button class="btn btn-primary" id="start-btn" type="button">
+                <svg width="16" height="15" viewBox="0 0 24 22" aria-hidden="true"><use href="#heartPath" fill="#FFF8F0"/></svg>Start building</button>
+              <button class="link" id="welcome-saved" type="button">Saved baskets</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Questions -->
+  <section class="screen" id="quiz" aria-label="Questions" hidden>
+    <div class="split">
+      <div class="stage">
+        <div class="live">
+          <span class="eyebrow">Your basket so far</span>
+        </div>
+        <div class="art" id="live-art"></div>
+        <div class="stage-caption" id="live-caption"></div>
+      </div>
+      <div class="panel" id="quiz-panel">
+        <div class="panel-inner">
+          <div class="quiz-top">
+            <div class="quiz-row">
+              <button class="icon-btn" id="back-btn" type="button" aria-label="Back">
+                <svg width="11" height="18" viewBox="0 0 11 18" aria-hidden="true"><path d="M9 2 2 9l7 7" fill="none" stroke="#7A2E3A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="chapters" id="chapters" role="progressbar" aria-valuemin="1" aria-valuemax="12"></div>
+              <button class="mini-basket" id="mini-basket" type="button" aria-label="See your basket so far"></button>
+            </div>
+          </div>
+          <div class="question" id="question"></div>
+          <div class="quiz-foot">
+            <span class="hint" id="foot-hint"></span>
+            <button class="btn btn-primary" id="next-btn" type="button">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <section class="screen" id="loading" aria-label="Building your basket" hidden>
+    <div class="art" id="loading-art"></div>
+    <h2 id="loading-text">Wrapping up something special…</h2>
+    <p class="muted" style="font-size:15px">Matching their love language, personality and favorite things</p>
+  </section>
+
+  <!-- Results -->
+  <section class="screen" id="results" aria-label="Your gift basket" hidden>
+    <div class="split" id="results-split">
+      <div class="stage results-stage">
+        <div class="art-tabs" id="art-tabs" role="tablist" hidden>
+          <button type="button" role="tab" id="tab-drawn" aria-selected="true">Illustration</button>
+          <button type="button" role="tab" id="tab-ai" aria-selected="false">AI painting</button>
+        </div>
+        <div class="art" id="result-art"></div>
+        <div class="stage-caption" id="result-caption"></div>
+        <div class="ai-row" id="ai-row" hidden>
+          <button class="btn btn-gold" id="ai-btn" type="button">✨ Paint it with AI</button>
+          <p class="ai-note" id="ai-note">Claude paints a one-of-a-kind picture of this exact basket. Takes about a minute.</p>
+        </div>
+      </div>
+      <div class="panel" id="results-panel">
+        <div class="panel-inner"><div class="res" id="res"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="sheet-layer" id="sheet-layer" hidden>
+    <div class="backdrop" id="sheet-backdrop"></div>
+    <aside class="sheet" role="dialog" aria-modal="true" aria-labelledby="saved-title">
+      <div class="sheet-head">
+        <div><h2 class="script" id="saved-title">Saved baskets</h2><p class="muted" style="font-size:14px">Kept in this browser on this device</p></div>
+        <button class="icon-btn" id="sheet-close" type="button" aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="#7A2E3A" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="sheet-body" id="saved-list"></div>
+    </aside>
+  </div>
+
+  <div class="preview-layer" id="preview-layer" hidden>
+    <div class="preview-card">
+      <span class="eyebrow">Your basket so far</span>
+      <div class="art" id="preview-art" style="width:100%"></div>
+      <div class="stage-caption" id="preview-caption"></div>
+      <button class="btn btn-ghost" id="preview-close" type="button">Keep going</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+<script>
+const GIFTS = [
+{"name":"Personalized knit blanket","detail":"Embroidered with your initials and a date that matters to you two","price":60.0,"kind":"cozy","hook":"it wraps them up in something warm that's unmistakably from you","p":["cozy"],"l":["touch","time"],"o":["anniversary","holiday","valentines"],"s":[],"c":["neutral","pink","gold"],"sn":[],"k":["blanket","knit","wool"],"sent":0.8},
+{"name":"Weighted blanket","detail":"A calming, gentle-pressure blanket for slow evenings","price":85.0,"kind":"cozy","hook":"it feels like a long hug at the end of a hard day","p":["cozy"],"l":["touch","acts"],"o":["holiday","birthday"],"s":[],"c":["neutral","blue","lavender"],"sn":[],"k":["blanket"],"sent":0.3},
+{"name":"Luxury candle trio","detail":"Three hand-poured candles in their favorite kinds of scents","price":42.0,"kind":"home","hook":"it turns any ordinary night into a slow, glowing evening","p":["cozy","glam"],"l":["gifts","touch"],"o":["holiday","birthday","justBecause"],"s":["vanilla","woodsy","floral","citrus","fresh"],"c":["neutral","gold"],"sn":[],"k":["candle","scented","fragrance"],"sent":0.4},
+{"name":"Matching pajama set for two","detail":"Soft, matching PJs for lazy mornings together","price":48.0,"kind":"cozy","hook":"matching PJs turn lazy Sundays into a little tradition","p":["cozy"],"l":["touch","time"],"o":["holiday","valentines","anniversary"],"s":[],"c":["pink","red","neutral"],"sn":[],"k":["pajamas","flannel"],"sent":0.6},
+{"name":"Heated throw blanket","detail":"A plush electric throw with gentle warmth settings","price":55.0,"kind":"cozy","hook":"they'll be warm and toasty every single night you're apart","p":["cozy"],"l":["acts","touch"],"o":["holiday"],"s":[],"c":["neutral","pink"],"sn":[],"k":["blanket","electric"],"sent":0.25},
+{"name":"Cozy slipper booties","detail":"Fleece-lined slippers that feel like walking on clouds","price":28.0,"kind":"cozy","hook":"warm feet are a love language all their own","p":["cozy"],"l":["acts","touch"],"o":["holiday","birthday"],"s":[],"c":["pink","neutral","lavender"],"sn":[],"k":["slippers"],"sent":0.3},
+{"name":"Mini indoor herb garden","detail":"A countertop kit with basil, mint and thyme","price":35.0,"kind":"home","hook":"it's a little bit of life on the windowsill that grows with your relationship","p":["foodie","cozy","creative"],"l":["acts","time"],"o":["justBecause","birthday"],"s":[],"c":["green"],"sn":[],"k":["plants","herbs","garden","gardening","kitchen"],"sent":0.4},
+{"name":"Weekend getaway, planned by you","detail":"Two nights somewhere new, every detail handled","price":200.0,"kind":"experience","hook":"the real gift is the memories, and you get to make them together","p":["adventurer"],"l":["time","acts"],"o":["anniversary","birthday","valentines"],"s":[],"c":[],"sn":[],"k":["travel","trip","getaway"],"sent":0.8},
+{"name":"Hot air balloon ride for two","detail":"A sunrise flight with a view you'll both remember","price":260.0,"kind":"experience","hook":"it's the kind of once-in-a-lifetime moment they'll tell stories about","p":["adventurer"],"l":["time"],"o":["anniversary","birthday"],"s":[],"c":[],"sn":[],"k":["balloon","heights","flight"],"sent":0.85},
+{"name":"Star map of a night that matters","detail":"A print of the exact sky on your first date or anniversary","price":45.0,"kind":"keepsake","hook":"it shows the exact sky above you on the night it all began","p":["adventurer","bookworm","creative"],"l":["words","gifts"],"o":["anniversary","valentines"],"s":[],"c":["black","blue","gold"],"sn":[],"k":["star map","print","poster"],"sent":1.0},
+{"name":"Hammock for two","detail":"A lightweight double hammock for parks, beaches and backyards","price":70.0,"kind":"outdoor","hook":"it's an open invitation to slow down side by side","p":["adventurer","cozy"],"l":["time","touch"],"o":["birthday","justBecause"],"s":[],"c":["green","blue"],"sn":[],"k":["hammock","camping","hiking","beach"],"sent":0.4},
+{"name":"Kayak or paddleboard date","detail":"A rental for two and a picnic waiting at the shore","price":80.0,"kind":"experience","hook":"you'll share a brand-new adventure and laugh the whole way","p":["adventurer","fitness"],"l":["time"],"o":["birthday","anniversary","justBecause"],"s":[],"c":[],"sn":[],"k":["water","kayak","paddleboard","beach","swimming"],"sent":0.5},
+{"name":"Engraved pocket compass","detail":"Engraved with \"so you'll always find your way back to me\"","price":30.0,"kind":"keepsake","hook":"it's a tiny, sweet promise they can carry on every journey","p":["adventurer"],"l":["words","gifts"],"o":["anniversary","birthday","valentines"],"s":[],"c":["gold"],"sn":[],"k":["compass","engraved","metal","travel"],"sent":0.9},
+{"name":"Scratch-off travel map","detail":"A wall map where you scratch off every place you visit together","price":25.0,"kind":"home","hook":"every trip you take together gets its own little reveal","p":["adventurer"],"l":["time"],"o":["anniversary","justBecause","birthday"],"s":[],"c":["gold","black"],"sn":[],"k":["map","poster","travel"],"sent":0.6},
+{"name":"Rechargeable hand warmer","detail":"A pocket-size, two-sided warmer that also charges a phone","price":22.0,"kind":"tech","hook":"you'll be keeping their hands warm even when yours aren't there","p":["adventurer","techie"],"l":["acts"],"o":["holiday"],"s":[],"c":["black","pink"],"sn":[],"k":["hand warmer","hiking","camping","charger"],"sent":0.2},
+{"name":"Pottery class for two","detail":"A hands-on wheel-throwing class where you each make something","price":90.0,"kind":"experience","hook":"you'll get messy together and come home with something you both made","p":["creative"],"l":["time","touch"],"o":["anniversary","birthday","justBecause"],"s":[],"c":[],"sn":[],"k":["pottery","clay","class","crafts","art"],"sent":0.6},
+{"name":"Premium watercolor kit","detail":"Artist-grade paints, brushes and a pad of cold-press paper","price":45.0,"kind":"hobby","hook":"it tells them you see and believe in the artist in them","p":["creative"],"l":["gifts"],"o":["birthday","holiday"],"s":[],"c":["pink","blue","lavender"],"sn":[],"k":["paint","watercolor","art","painting"],"sent":0.35},
+{"name":"Custom illustrated portrait of you two","detail":"Your favorite photo, hand-illustrated by an artist","price":75.0,"kind":"keepsake","hook":"it turns your favorite moment into art they can hang on the wall","p":["creative","glam"],"l":["words","gifts"],"o":["anniversary","valentines"],"s":[],"c":[],"sn":[],"k":["portrait","art","illustration"],"sent":1.0},
+{"name":"Instant camera with film","detail":"A pastel instant camera and two packs of film","price":85.0,"kind":"tech","hook":"every date becomes a little print they can hold onto","p":["creative","adventurer","techie"],"l":["time","gifts"],"o":["birthday","holiday","anniversary"],"s":[],"c":["pink","blue","lavender"],"sn":[],"k":["camera","film","photo","photography"],"sent":0.7},
+{"name":"Embroidery starter kit","detail":"A floral pattern, hoop, threads and everything to begin","price":22.0,"kind":"hobby","hook":"it's a calm, cozy new hobby made just for their hands","p":["creative","cozy"],"l":["time","gifts"],"o":["justBecause","birthday"],"s":[],"c":["pink","green"],"sn":[],"k":["embroidery","needle","thread","crafts","sewing"],"sent":0.4},
+{"name":"Embossed leather sketchbook","detail":"A refillable leather sketchbook stamped with their initials","price":38.0,"kind":"hobby","hook":"it gives every idea they have a beautiful place to live","p":["creative","bookworm","adventurer"],"l":["words","gifts"],"o":["birthday","anniversary"],"s":[],"c":["neutral"],"sn":[],"k":["leather","sketchbook","drawing","art","journal","writing"],"sent":0.7},
+{"name":"Candle-making kit","detail":"Soy wax, wicks, jars and scents to pour their own candles","price":32.0,"kind":"hobby","hook":"you can make a cozy craft night of it, together","p":["creative","cozy"],"l":["time"],"o":["justBecause","holiday"],"s":["vanilla","floral","citrus","woodsy"],"c":[],"sn":[],"k":["candle","wax","fragrance","crafts"],"sent":0.4},
+{"name":"Cooking class for two","detail":"A chef-led class where you cook and eat a full meal together","price":120.0,"kind":"experience","hook":"you'll learn something delicious side by side, then share it","p":["foodie"],"l":["time"],"o":["anniversary","birthday","valentines"],"s":[],"c":[],"sn":[],"k":["cooking","class","kitchen","food"],"sent":0.6},
+{"name":"Charcuterie board set","detail":"An acacia board, little knives and tiny bowls for a perfect spread","price":55.0,"kind":"home","hook":"it's an excuse for long, snacky evenings together","p":["foodie"],"l":["time","gifts"],"o":["holiday","anniversary"],"s":[],"c":["neutral"],"sn":[],"k":["board","cheese","charcuterie","wood","kitchen"],"sent":0.4},
+{"name":"Engraved wooden cutting board","detail":"Engraved with your names or a family recipe","price":45.0,"kind":"keepsake","hook":"it's something they'll use every single day and think of you","p":["foodie","cozy"],"l":["acts","words"],"o":["anniversary","holiday"],"s":[],"c":["neutral"],"sn":[],"k":["wood","cutting board","engraved","kitchen","cooking"],"sent":0.75},
+{"name":"Artisan hot sauce flight","detail":"Six small-batch hot sauces from mild to wild","price":30.0,"kind":"foodDrink","hook":"it's a fun, fiery tasting adventure you can try together","p":["foodie"],"l":["gifts"],"o":["birthday","justBecause"],"s":[],"c":[],"sn":["salty"],"k":["hot sauce","spicy","chili","food"],"sent":0.2},
+{"name":"Chocolate tasting box","detail":"A curated box of single-origin chocolates with tasting notes","price":40.0,"kind":"foodDrink","hook":"every piece is a sweet little moment of indulgence","p":["foodie","glam"],"l":["gifts"],"o":["valentines","anniversary","apology"],"s":[],"c":["red","gold"],"sn":["chocolate","sweet"],"k":["chocolate","dairy","nut","cocoa"],"sent":0.5},
+{"name":"Fresh pasta-making kit","detail":"A rolling pin, cutter, flour and a recipe card to make pasta from scratch","price":38.0,"kind":"hobby","hook":"it's a whole date night in a box, flour fights included","p":["foodie","creative"],"l":["time"],"o":["anniversary","justBecause"],"s":[],"c":[],"sn":[],"k":["pasta","gluten","wheat","egg","cooking","kitchen"],"sent":0.4},
+{"name":"A three-course dinner you cook at home","detail":"Their favorite meal, candles and a handwritten menu","price":40.0,"kind":"experience","hook":"nothing says 'I'm paying attention' like their favorite meal, made by you","p":["foodie","cozy"],"l":["acts","time"],"o":["apology","anniversary","justBecause","valentines"],"s":[],"c":[],"sn":[],"k":["dinner","cooking","food"],"sent":0.8},
+{"name":"Coffee subscription (3 months)","detail":"Fresh roasts from small roasters delivered every month","price":60.0,"kind":"foodDrink","hook":"it's a little hello from you, delivered to their door every month","p":["foodie","bookworm"],"l":["acts","gifts"],"o":["birthday","holiday"],"s":[],"c":[],"sn":["coffeeTea"],"k":["coffee","caffeine","subscription"],"sent":0.3},
+{"name":"Glass teapot & loose-leaf sampler","detail":"A glass teapot with infuser and six loose-leaf teas","price":36.0,"kind":"foodDrink","hook":"it makes every cup a slow, peaceful little ritual","p":["bookworm","cozy"],"l":["acts","time"],"o":["holiday","justBecause"],"s":["floral","citrus"],"c":[],"sn":["coffeeTea"],"k":["tea","caffeine","glass"],"sent":0.35},
+{"name":"Smart water bottle","detail":"Glows to remind them to drink and tracks every sip","price":50.0,"kind":"fitness","hook":"it's a quiet way of saying 'I want you to take care of yourself'","p":["fitness","techie"],"l":["acts"],"o":["birthday","justBecause"],"s":[],"c":["pink","black","blue"],"sn":[],"k":["bottle","workout","gym","tech"],"sent":0.2},
+{"name":"Yoga mat & strap set","detail":"A thick, non-slip mat with a carry strap","price":45.0,"kind":"fitness","hook":"it supports the routine that keeps them feeling strong","p":["fitness"],"l":["acts","gifts"],"o":["birthday","holiday"],"s":[],"c":["pink","lavender","green","blue"],"sn":[],"k":["yoga","mat","workout","latex"],"sent":0.25},
+{"name":"Massage gun","detail":"A quiet, compact percussion massager for sore muscles","price":99.0,"kind":"fitness","hook":"sore muscles meet their match, and you'll be the one who thought of it","p":["fitness","techie"],"l":["touch","acts"],"o":["birthday","holiday"],"s":[],"c":["black","pink"],"sn":[],"k":["massage gun","recovery","gym","tech"],"sent":0.2},
+{"name":"Dance or yoga class for two","detail":"A drop-in couples class: salsa, swing or partner yoga","price":60.0,"kind":"experience","hook":"you'll be close, a little clumsy and laughing the whole time","p":["fitness","adventurer"],"l":["time","touch"],"o":["anniversary","valentines","justBecause"],"s":[],"c":[],"sn":[],"k":["dance","dancing","yoga","class"],"sent":0.55},
+{"name":"Running belt & reflective gear","detail":"A bounce-free running belt plus reflective bands","price":28.0,"kind":"fitness","hook":"it keeps them safe on every early-morning run","p":["fitness","adventurer"],"l":["acts"],"o":["birthday","justBecause"],"s":[],"c":["black","pink"],"sn":[],"k":["running","workout"],"sent":0.15},
+{"name":"Couples' massage","detail":"An hour side by side at a calm, candlelit spa","price":180.0,"kind":"experience","hook":"it's an hour of total calm that you get to share","p":["fitness","glam","cozy"],"l":["touch","time"],"o":["anniversary","birthday","valentines","apology"],"s":[],"c":[],"sn":[],"k":["massage","spa"],"sent":0.6},
+{"name":"Fitness tracker band","detail":"A slim tracker for steps, sleep and heart rate","price":140.0,"kind":"tech","hook":"it celebrates every goal they hit, and you get to cheer them on","p":["fitness","techie"],"l":["acts","gifts"],"o":["birthday","holiday"],"s":[],"c":["black","pink","lavender"],"sn":[],"k":["tracker","watch","running","gym","tech"],"sent":0.2},
+{"name":"Book subscription box","detail":"A hand-picked new release every month with a little treat","price":50.0,"kind":"book","hook":"a new story shows up every month with your love tucked inside","p":["bookworm"],"l":["gifts","acts"],"o":["birthday","holiday"],"s":[],"c":[],"sn":[],"k":["book","books","reading","subscription"],"sent":0.4},
+{"name":"Special edition of their favorite book","detail":"A beautiful collector's edition with sprayed edges","price":70.0,"kind":"book","hook":"it shows you know the stories that shaped them","p":["bookworm"],"l":["gifts","words"],"o":["birthday","anniversary","holiday"],"s":[],"c":[],"sn":[],"k":["book","books","reading","novel"],"sent":0.8},
+{"name":"Personalized library embosser","detail":"\"From the library of\" with their name, pressed into every page","price":35.0,"kind":"keepsake","hook":"every book they own becomes officially theirs","p":["bookworm"],"l":["words","gifts"],"o":["birthday","holiday"],"s":[],"c":[],"sn":[],"k":["embosser","stamp","book","reading"],"sent":0.7},
+{"name":"Reading nook kit","detail":"A clip light, plush pillow and a tin of tea for reading nights","price":45.0,"kind":"cozy","hook":"it builds them the coziest corner to disappear into a story","p":["bookworm","cozy"],"l":["acts","time"],"o":["holiday","justBecause"],"s":[],"c":["neutral","pink"],"sn":[],"k":["reading","light","pillow","tea","book"],"sent":0.35},
+{"name":"E-reader","detail":"A glare-free e-reader that holds thousands of books","price":130.0,"kind":"tech","hook":"their whole library fits in one hand, ready for any trip","p":["bookworm","techie"],"l":["gifts","acts"],"o":["birthday","holiday"],"s":[],"c":["black"],"sn":[],"k":["e-reader","reading","books","tech"],"sent":0.2},
+{"name":"Bookshop date + \"pick any book\" card","detail":"An afternoon in their favorite bookstore, your treat","price":30.0,"kind":"experience","hook":"you get to watch them light up in their favorite kind of place","p":["bookworm"],"l":["time","gifts"],"o":["birthday","justBecause","anniversary"],"s":[],"c":[],"sn":[],"k":["bookstore","book","reading"],"sent":0.6},
+{"name":"Paperback of their favorite author + bookmark","detail":"Their next read and a ribbon bookmark to match","price":22.0,"kind":"book","hook":"it shows you actually listen when they talk about what they love","p":["bookworm"],"l":["gifts"],"o":["justBecause","birthday"],"s":[],"c":[],"sn":[],"k":["book","paperback","reading","bookmark"],"sent":0.45},
+{"name":"Love letters journal","detail":"A journal of twelve letters, one to open each month","price":20.0,"kind":"keepsake","hook":"twelve letters in your handwriting are waiting for just the right moments","p":["bookworm","creative","cozy"],"l":["words"],"o":["anniversary","valentines","apology","justBecause"],"s":[],"c":[],"sn":[],"k":["journal","letters","paper","writing"],"sent":1.0},
+{"name":"Dainty initial necklace","detail":"A delicate gold-filled chain with their initial","price":55.0,"kind":"jewelry","hook":"they'll wear a little piece of you every day","p":["glam"],"l":["gifts","words"],"o":["birthday","anniversary","valentines"],"s":[],"c":["gold"],"sn":[],"k":["necklace","jewelry","gold","metal","nickel"],"sent":0.8},
+{"name":"Birthstone ring","detail":"A slim band set with their birthstone","price":75.0,"kind":"jewelry","hook":"it's personal, sparkly and made only for them","p":["glam"],"l":["gifts"],"o":["birthday","anniversary"],"s":[],"c":["gold"],"sn":[],"k":["ring","jewelry","metal","nickel"],"sent":0.8},
+{"name":"Silk pillowcase & sleep mask set","detail":"Mulberry silk for softer hair and beauty sleep","price":45.0,"kind":"beauty","hook":"it makes every night feel a little more luxurious","p":["glam","cozy"],"l":["touch","acts"],"o":["birthday","holiday","justBecause"],"s":[],"c":["pink","neutral","lavender"],"sn":[],"k":["silk","pillowcase","sleep","beauty"],"sent":0.3},
+{"name":"Perfume discovery set","detail":"A box of mini perfumes to find their signature scent","price":35.0,"kind":"beauty","hook":"it's a little adventure in finding the scent that feels like them","p":["glam"],"l":["gifts"],"o":["birthday","holiday","valentines"],"s":["floral","vanilla","citrus","woodsy","fresh"],"c":[],"sn":[],"k":["perfume","fragrance","beauty"],"sent":0.4},
+{"name":"Spa day gift card","detail":"A facial or massage at a spa near them","price":120.0,"kind":"experience","hook":"they deserve a whole day of being taken care of","p":["glam","cozy"],"l":["touch","acts"],"o":["birthday","apology","holiday"],"s":[],"c":[],"sn":[],"k":["spa","massage","skincare","beauty"],"sent":0.4},
+{"name":"Bouquet of their favorite flowers + vase","detail":"A hand-tied bouquet in a vase they can keep","price":55.0,"kind":"home","hook":"flowers say 'I was thinking of you' out loud, all week long","p":["glam","cozy"],"l":["gifts","words"],"o":["valentines","anniversary","apology","justBecause","birthday"],"s":["floral"],"c":["pink","red","lavender","yellow"],"sn":[],"k":["flowers","flower","bouquet","pollen"],"sent":0.7},
+{"name":"Engraved jewelry box","detail":"A velvet-lined box engraved with a short message","price":40.0,"kind":"keepsake","hook":"it's a pretty place for their treasures, with your words inside the lid","p":["glam"],"l":["gifts","words"],"o":["anniversary","birthday","holiday"],"s":[],"c":["pink","neutral","gold"],"sn":[],"k":["jewelry box","engraved"],"sent":0.85},
+{"name":"A dozen red roses","detail":"Classic long-stem roses, hand-delivered","price":65.0,"kind":"home","hook":"it's the most classic way to say 'I love you' there is","p":["glam"],"l":["gifts","words"],"o":["valentines","anniversary","apology"],"s":["floral"],"c":["red"],"sn":[],"k":["roses","rose","flowers","pollen"],"sent":0.7},
+{"name":"Lip & cheek gift set","detail":"A set of buildable tints in their favorite shades","price":40.0,"kind":"beauty","hook":"it's an everyday glow-up they'll reach for constantly","p":["glam"],"l":["gifts"],"o":["birthday","holiday"],"s":[],"c":["pink","red"],"sn":[],"k":["makeup","lip","beauty"],"sent":0.3},
+{"name":"Satin scrunchie & claw clip set","detail":"A pretty set of hair accessories in soft tones","price":18.0,"kind":"beauty","hook":"it's a small luxury they'll use every single day","p":["glam"],"l":["gifts"],"o":["justBecause","birthday"],"s":[],"c":["pink","neutral","lavender","black"],"sn":[],"k":["satin","scrunchie","hair","fashion"],"sent":0.25},
+{"name":"Wireless earbuds","detail":"Noise-cancelling earbuds with a pocket charging case","price":130.0,"kind":"tech","hook":"their favorite songs (and your voice notes) go everywhere with them","p":["techie","fitness"],"l":["gifts","acts"],"o":["birthday","holiday"],"s":[],"c":["black","neutral"],"sn":[],"k":["earbuds","music","tech"],"sent":0.2},
+{"name":"Digital photo frame with your photos","detail":"Preloaded with your favorite photos together","price":90.0,"kind":"tech","hook":"they'll see your favorite moments together every time they walk by","p":["techie","cozy"],"l":["words","time"],"o":["anniversary","holiday","birthday"],"s":[],"c":[],"sn":[],"k":["photo frame","photos","tech"],"sent":0.9},
+{"name":"Temperature-control smart mug","detail":"Keeps their coffee or tea at the perfect temperature","price":110.0,"kind":"tech","hook":"no more cold coffee, ever. It's love in a mug","p":["techie","bookworm"],"l":["acts"],"o":["birthday","holiday"],"s":[],"c":[],"sn":["coffeeTea"],"k":["mug","coffee","tea","tech"],"sent":0.2},
+{"name":"Bluetooth sleep headband","detail":"Soft headband headphones for falling asleep to music","price":40.0,"kind":"tech","hook":"it's a cozy way to drift off to their favorite sounds","p":["techie","cozy"],"l":["acts"],"o":["justBecause","birthday"],"s":[],"c":[],"sn":[],"k":["headband","sleep","music","tech"],"sent":0.2},
+{"name":"Mini movie projector","detail":"A portable projector for movie nights on any wall","price":120.0,"kind":"tech","hook":"your living room becomes a private movie theater for two","p":["techie","cozy"],"l":["time"],"o":["birthday","holiday","anniversary"],"s":[],"c":[],"sn":[],"k":["projector","movie","movies","tech"],"sent":0.4},
+{"name":"Custom phone case with your photo","detail":"A sturdy case printed with a favorite photo of you two","price":30.0,"kind":"tech","hook":"they'll smile every time they pick up their phone","p":["techie","glam"],"l":["words","gifts"],"o":["anniversary","valentines","justBecause"],"s":[],"c":[],"sn":[],"k":["phone case","photo","tech"],"sent":0.7},
+{"name":"3-in-1 wireless charging stand","detail":"Charges a phone, watch and earbuds at once","price":50.0,"kind":"tech","hook":"it clears up their nightstand clutter in the nicest way","p":["techie"],"l":["acts"],"o":["birthday","holiday"],"s":[],"c":["neutral","black"],"sn":[],"k":["charger","tech"],"sent":0.1},
+{"name":"Smart bulbs with a \"date night\" scene","detail":"Color bulbs set to a warm, glowing date-night mood","price":45.0,"kind":"tech","hook":"one tap and the whole room feels like date night","p":["techie","cozy"],"l":["acts","time"],"o":["justBecause","holiday"],"s":[],"c":["pink","lavender","red"],"sn":[],"k":["smart bulbs","light","tech","gaming"],"sent":0.35},
+{"name":"Sunrise alarm clock","detail":"Wakes them gently with soft light and birdsong","price":60.0,"kind":"tech","hook":"every morning starts a little softer, thanks to you","p":["cozy","fitness","techie"],"l":["acts"],"o":["birthday","holiday"],"s":[],"c":[],"sn":[],"k":["alarm clock","light","sleep","tech"],"sent":0.2},
+{"name":"\"Open when\" letters bundle","detail":"Letters for when they're sad, happy, missing you or can't sleep","price":12.0,"kind":"keepsake","hook":"your words will be ready for every mood they'll ever have","p":[],"l":["words"],"o":["apology","justBecause","anniversary","valentines"],"s":[],"c":[],"sn":[],"k":["letters","paper","writing"],"sent":1.0},
+{"name":"Memory jar of 52 reasons I love you","detail":"A glass jar of rolled notes, one for every week","price":15.0,"kind":"keepsake","hook":"they get a new reason you love them every single week of the year","p":[],"l":["words","gifts"],"o":["valentines","anniversary","justBecause","apology"],"s":[],"c":["pink","red"],"sn":[],"k":["jar","notes","paper","writing"],"sent":1.0},
+{"name":"\"Our story\" scrapbook","detail":"Photos, ticket stubs and little notes from your time together","price":25.0,"kind":"keepsake","hook":"it's your love story, told one page at a time","p":["creative","cozy"],"l":["words","time"],"o":["anniversary","valentines"],"s":[],"c":[],"sn":[],"k":["scrapbook","photos","crafts"],"sent":1.0},
+{"name":"Handmade love coupon book","detail":"Coupons for breakfast in bed, a massage, a movie of their choice…","price":8.0,"kind":"keepsake","hook":"it's a promise of time and care they can cash in whenever they need you","p":[],"l":["acts","time","touch"],"o":["apology","justBecause","valentines","birthday"],"s":[],"c":[],"sn":[],"k":["coupon","paper"],"sent":0.8},
+{"name":"Voice message keychain","detail":"A tiny keychain that plays your recorded message","price":22.0,"kind":"keepsake","hook":"they can hear 'I love you' in your voice whenever they want","p":[],"l":["words"],"o":["anniversary","valentines","justBecause"],"s":[],"c":[],"sn":[],"k":["keychain","voice","recording"],"sent":0.95},
+{"name":"Potted plant with a handwritten tag","detail":"An easy-care plant with a little note tied on","price":25.0,"kind":"home","hook":"it's a growing reminder of you on their windowsill","p":["cozy","creative"],"l":["gifts","acts"],"o":["justBecause","apology","birthday"],"s":[],"c":["green"],"sn":[],"k":["plant","plants","succulent","gardening"],"sent":0.5},
+{"name":"Concert or show tickets for two","detail":"Seats to see a band, comedian or show they love","price":150.0,"kind":"experience","hook":"a night out at something they love, with you right beside them","p":["adventurer","creative","glam"],"l":["time"],"o":["birthday","anniversary","holiday"],"s":[],"c":[],"sn":[],"k":["concert","tickets","music","show"],"sent":0.5}
+];
+const BASKET_ITEMS = [
+{"name":"Chunky knit throw blanket","price":38.0,"themes":["cozyNight","movieNight"],"p":["cozy","bookworm"],"l":["touch","time"],"o":["holiday","anniversary"],"s":[],"c":["neutral","pink","gold"],"sn":[],"k":["blanket","knit","wool","cozy"],"sent":0.4},
+{"name":"Vanilla bean soy candle","price":14.0,"themes":["cozyNight","spa"],"p":["cozy","glam"],"l":["touch","gifts"],"o":[],"s":["vanilla"],"c":["neutral"],"sn":[],"k":["candle","scented","fragrance","soy"],"sent":0.4},
+{"name":"Fuzzy socks","price":6.0,"themes":["cozyNight","spa"],"p":["cozy"],"l":["touch","acts"],"o":["holiday"],"s":[],"c":["pink","neutral","lavender"],"sn":[],"k":["socks","cozy"],"sent":0.4},
+{"name":"Gourmet hot cocoa packets","price":5.0,"themes":["cozyNight","sweetTooth"],"p":["cozy"],"l":["time"],"o":["holiday"],"s":[],"c":[],"sn":["sweet","chocolate"],"k":["cocoa","chocolate","dairy","milk"],"sent":0.4},
+{"name":"Handwritten \"open when\" envelope","price":2.0,"themes":["cozyNight","keepsake"],"p":[],"l":["words"],"o":["apology","justBecause"],"s":[],"c":["pink","red"],"sn":[],"k":["letter","note","paper","writing"],"sent":0.95},
+{"name":"Bag of fluffy marshmallows","price":3.0,"themes":["cozyNight","sweetTooth","adventure"],"p":[],"l":["time"],"o":[],"s":[],"c":[],"sn":["sweet"],"k":["marshmallow","gelatin","sugar","campfire"],"sent":0.4},
+{"name":"Ceramic mug with a heart handle","price":12.0,"themes":["cozyNight","coffeeMorning"],"p":["cozy"],"l":["gifts"],"o":["valentines","anniversary"],"s":[],"c":["pink","red"],"sn":[],"k":["mug","ceramic"],"sent":0.6},
+{"name":"Chamomile tea sampler","price":6.0,"themes":["cozyNight","spa"],"p":["cozy","bookworm"],"l":["acts"],"o":[],"s":["floral"],"c":[],"sn":["coffeeTea","healthy"],"k":["tea","chamomile","herbal"],"sent":0.4},
+{"name":"500-piece jigsaw puzzle","price":15.0,"themes":["cozyNight"],"p":["cozy","creative"],"l":["time"],"o":[],"s":[],"c":[],"sn":[],"k":["puzzle","game","gaming"],"sent":0.4},
+{"name":"Silk sleep mask","price":10.0,"themes":["cozyNight","spa"],"p":["cozy","glam"],"l":["acts","touch"],"o":[],"s":[],"c":["pink","black","lavender"],"sn":[],"k":["silk","sleep","mask"],"sent":0.4},
+{"name":"\"One massage, anytime\" coupon","price":1.0,"themes":["spa"],"p":[],"l":["touch","acts"],"o":["apology","valentines","justBecause"],"s":[],"c":[],"sn":[],"k":["coupon","massage","paper"],"sent":0.85},
+{"name":"Mini scented votive","price":3.0,"themes":["spa"],"p":["cozy","glam"],"l":["touch"],"o":[],"s":["floral","vanilla"],"c":[],"sn":[],"k":["candle","votive","scented","fragrance"],"sent":0.4},
+{"name":"Rose bath bomb","price":4.0,"themes":["spa"],"p":["glam","cozy"],"l":["touch"],"o":[],"s":["floral"],"c":["pink","red"],"sn":[],"k":["bath","bomb","fragrance","rose"],"sent":0.4},
+{"name":"Lavender bath salts","price":9.0,"themes":["spa"],"p":["cozy","glam"],"l":["touch"],"o":[],"s":["floral"],"c":["lavender"],"sn":[],"k":["bath","salt","lavender","fragrance"],"sent":0.4},
+{"name":"Shea butter hand cream","price":7.0,"themes":["spa","glamNight"],"p":["glam"],"l":["touch","acts"],"o":[],"s":["vanilla"],"c":[],"sn":[],"k":["lotion","cream","shea","skincare","fragrance","beauty"],"sent":0.4},
+{"name":"Sheet face masks (3-pack)","price":5.0,"themes":["spa","glamNight"],"p":["glam"],"l":["touch"],"o":[],"s":[],"c":["pink"],"sn":[],"k":["mask","skincare","beauty"],"sent":0.4},
+{"name":"Plush spa headband","price":5.0,"themes":["spa"],"p":["glam","cozy"],"l":["acts"],"o":[],"s":[],"c":["pink","neutral"],"sn":[],"k":["headband","skincare"],"sent":0.4},
+{"name":"Jade facial roller","price":14.0,"themes":["spa","glamNight"],"p":["glam"],"l":["touch"],"o":[],"s":[],"c":["green"],"sn":[],"k":["roller","skincare","beauty"],"sent":0.4},
+{"name":"Eucalyptus shower steamers","price":8.0,"themes":["spa","fitness"],"p":["fitness","cozy"],"l":["acts"],"o":[],"s":["fresh"],"c":["green"],"sn":[],"k":["shower","eucalyptus","fragrance"],"sent":0.4},
+{"name":"Vanilla massage oil","price":12.0,"themes":["spa"],"p":[],"l":["touch"],"o":["anniversary","valentines"],"s":["vanilla"],"c":[],"sn":[],"k":["massage","oil","almond","nut","fragrance"],"sent":0.6},
+{"name":"Lip balm trio","price":5.0,"themes":["spa","adventure","glamNight"],"p":["glam","adventurer"],"l":["touch"],"o":[],"s":["citrus","vanilla"],"c":[],"sn":[],"k":["lip","balm","beeswax","beauty"],"sent":0.4},
+{"name":"Citrus sugar body scrub","price":11.0,"themes":["spa"],"p":["glam"],"l":["touch"],"o":[],"s":["citrus"],"c":["yellow"],"sn":[],"k":["scrub","sugar","skincare","fragrance"],"sent":0.4},
+{"name":"\"Breakfast in bed\" coupon","price":1.0,"themes":["coffeeMorning"],"p":[],"l":["acts","time"],"o":["apology","birthday","justBecause"],"s":[],"c":[],"sn":[],"k":["coupon","breakfast","paper"],"sent":0.85},
+{"name":"\"Good morning, beautiful\" sticky notes","price":3.0,"themes":["coffeeMorning","keepsake"],"p":[],"l":["words"],"o":[],"s":[],"c":["pink","yellow"],"sn":[],"k":["notes","paper","writing"],"sent":0.9},
+{"name":"Honey sticks","price":3.0,"themes":["coffeeMorning","sweetTooth"],"p":[],"l":[],"o":[],"s":[],"c":[],"sn":["sweet","coffeeTea"],"k":["honey"],"sent":0.4},
+{"name":"Chocolate-covered espresso beans","price":5.0,"themes":["coffeeMorning","sweetTooth"],"p":["foodie"],"l":[],"o":[],"s":[],"c":[],"sn":["chocolate","coffeeTea"],"k":["chocolate","espresso","coffee","caffeine","dairy"],"sent":0.4},
+{"name":"Almond biscotti","price":6.0,"themes":["coffeeMorning","foodie"],"p":["foodie"],"l":[],"o":[],"s":[],"c":[],"sn":["sweet"],"k":["biscotti","almond","nut","gluten","wheat","baking"],"sent":0.4},
+{"name":"Single-origin coffee sampler","price":9.0,"themes":["coffeeMorning"],"p":["foodie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":["coffeeTea"],"k":["coffee","caffeine","beans"],"sent":0.4},
+{"name":"Small-batch whole bean coffee","price":16.0,"themes":["coffeeMorning"],"p":["foodie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":["coffeeTea"],"k":["coffee","caffeine","beans"],"sent":0.4},
+{"name":"Vanilla coffee syrup","price":7.0,"themes":["coffeeMorning"],"p":[],"l":[],"o":[],"s":["vanilla"],"c":[],"sn":["sweet","coffeeTea"],"k":["syrup","sugar","coffee"],"sent":0.4},
+{"name":"Handheld milk frother","price":12.0,"themes":["coffeeMorning"],"p":["techie","foodie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["frother","coffee","kitchen"],"sent":0.4},
+{"name":"Ceramic pour-over dripper","price":15.0,"themes":["coffeeMorning"],"p":["foodie","creative"],"l":["acts","time"],"o":[],"s":[],"c":[],"sn":[],"k":["pour over","coffee","ceramic"],"sent":0.4},
+{"name":"Earl Grey loose-leaf tea tin","price":8.0,"themes":["coffeeMorning","bookworm"],"p":["bookworm","cozy"],"l":[],"o":[],"s":["citrus"],"c":[],"sn":["coffeeTea"],"k":["tea","caffeine","earl grey"],"sent":0.4},
+{"name":"Matcha starter kit","price":18.0,"themes":["coffeeMorning","fitness"],"p":["fitness","foodie"],"l":[],"o":[],"s":[],"c":["green"],"sn":["healthy","coffeeTea"],"k":["matcha","tea","caffeine"],"sent":0.4},
+{"name":"Insulated travel tumbler","price":18.0,"themes":["coffeeMorning","adventure","fitness"],"p":["adventurer","fitness"],"l":["acts"],"o":[],"s":[],"c":["pink","black","green","blue"],"sn":[],"k":["tumbler","coffee","travel"],"sent":0.4},
+{"name":"\"Movie date\" ticket coupons","price":2.0,"themes":["movieNight"],"p":[],"l":["time","words"],"o":["justBecause","valentines"],"s":[],"c":["red"],"sn":[],"k":["coupon","movie","paper"],"sent":0.8},
+{"name":"Sea salt kettle chips","price":3.0,"themes":["movieNight","picnic"],"p":[],"l":[],"o":[],"s":[],"c":[],"sn":["salty"],"k":["chips","potato"],"sent":0.4},
+{"name":"Retro candy assortment","price":5.0,"themes":["movieNight","sweetTooth"],"p":[],"l":[],"o":[],"s":[],"c":["red","pink"],"sn":["sweet"],"k":["candy","sugar","gelatin","movie"],"sent":0.4},
+{"name":"Gourmet popcorn kernels & seasonings","price":6.0,"themes":["movieNight"],"p":["cozy","foodie"],"l":[],"o":[],"s":[],"c":[],"sn":["salty"],"k":["popcorn","corn","movie"],"sent":0.4},
+{"name":"Sparkling apple cider","price":5.0,"themes":["movieNight","picnic"],"p":[],"l":[],"o":["holiday","anniversary"],"s":[],"c":[],"sn":["sweet"],"k":["cider","apple","juice"],"sent":0.4},
+{"name":"Striped popcorn bowls (set of 2)","price":10.0,"themes":["movieNight"],"p":[],"l":["time"],"o":[],"s":[],"c":["red"],"sn":[],"k":["bowls","movie"],"sent":0.4},
+{"name":"Chocolate-covered pretzels","price":6.0,"themes":["movieNight","sweetTooth"],"p":[],"l":[],"o":[],"s":[],"c":[],"sn":["chocolate","salty"],"k":["chocolate","pretzels","gluten","wheat","dairy"],"sent":0.4},
+{"name":"Streaming gift card","price":25.0,"themes":["movieNight","techTreats"],"p":["techie","cozy"],"l":["gifts","time"],"o":[],"s":[],"c":[],"sn":[],"k":["gift card","streaming","movie","tv"],"sent":0.4},
+{"name":"Wearable blanket hoodie","price":35.0,"themes":["movieNight","cozyNight"],"p":["cozy"],"l":["touch"],"o":["holiday"],"s":[],"c":["neutral","black","pink"],"sn":[],"k":["hoodie","blanket","cozy"],"sent":0.4},
+{"name":"\"Our next adventure\" coupon","price":1.0,"themes":["adventure"],"p":["adventurer"],"l":["time"],"o":["birthday","anniversary"],"s":[],"c":[],"sn":[],"k":["coupon","travel","paper","trip"],"sent":0.85},
+{"name":"Hand warmers (2 pairs)","price":3.0,"themes":["adventure"],"p":["adventurer"],"l":["acts"],"o":["holiday"],"s":[],"c":[],"sn":[],"k":["hand warmers","hiking","camping"],"sent":0.4},
+{"name":"Sweet & salty trail mix","price":6.0,"themes":["adventure","fitness"],"p":["adventurer","fitness"],"l":[],"o":[],"s":[],"c":[],"sn":["salty","sweet","healthy"],"k":["trail mix","nut","peanut","almond","raisins","hiking"],"sent":0.4},
+{"name":"Sunscreen stick","price":7.0,"themes":["adventure","fitness","picnic"],"p":["adventurer","fitness"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["sunscreen","beach","hiking"],"sent":0.4},
+{"name":"Mini first-aid kit","price":9.0,"themes":["adventure"],"p":["adventurer"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["first aid","hiking","camping"],"sent":0.4},
+{"name":"Engraved carabiner keychain","price":8.0,"themes":["adventure"],"p":["adventurer"],"l":["gifts"],"o":[],"s":[],"c":[],"sn":[],"k":["keychain","engraved","metal","climbing"],"sent":0.7},
+{"name":"Pocket adventure journal","price":10.0,"themes":["adventure","creative"],"p":["adventurer","creative"],"l":["words"],"o":[],"s":[],"c":[],"sn":[],"k":["journal","notebook","paper","travel","writing"],"sent":0.7},
+{"name":"Wool hiking socks","price":14.0,"themes":["adventure","fitness"],"p":["adventurer","fitness"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["socks","wool","hiking"],"sent":0.4},
+{"name":"Rechargeable headlamp","price":18.0,"themes":["adventure"],"p":["adventurer","techie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["headlamp","light","camping","hiking"],"sent":0.4},
+{"name":"Campfire s'mores kit","price":10.0,"themes":["adventure","picnic"],"p":["adventurer","cozy"],"l":["time"],"o":[],"s":[],"c":[],"sn":["sweet","chocolate"],"k":["smores","chocolate","marshmallow","graham","gluten","camping"],"sent":0.4},
+{"name":"Collapsible water bottle","price":12.0,"themes":["adventure","fitness"],"p":["adventurer","fitness"],"l":["acts"],"o":[],"s":[],"c":["blue","green"],"sn":[],"k":["bottle","hiking","travel"],"sent":0.4},
+{"name":"\"Paint with me\" date coupon","price":1.0,"themes":["creative"],"p":["creative"],"l":["time"],"o":[],"s":[],"c":[],"sn":[],"k":["coupon","paint","art","paper"],"sent":0.85},
+{"name":"Sticker sheet set","price":4.0,"themes":["creative","techTreats"],"p":["creative","techie"],"l":[],"o":[],"s":[],"c":["pink","lavender","yellow"],"sn":[],"k":["stickers","art"],"sent":0.4},
+{"name":"Washi tape set","price":5.0,"themes":["creative"],"p":["creative"],"l":[],"o":[],"s":[],"c":["pink","lavender","gold"],"sn":[],"k":["tape","washi","crafts","journaling"],"sent":0.4},
+{"name":"Colored pencils (12)","price":5.0,"themes":["creative"],"p":["creative"],"l":[],"o":[],"s":[],"c":[],"sn":[],"k":["pencils","drawing","art"],"sent":0.4},
+{"name":"Pocket sketchbook","price":7.0,"themes":["creative","adventure"],"p":["creative","adventurer"],"l":[],"o":[],"s":[],"c":[],"sn":[],"k":["sketchbook","drawing","art","paper"],"sent":0.4},
+{"name":"Pressed-flower bookmark kit","price":8.0,"themes":["creative","bookworm"],"p":["creative","bookworm"],"l":[],"o":[],"s":["floral"],"c":[],"sn":[],"k":["flower","pressed","bookmark","crafts"],"sent":0.7},
+{"name":"Air-dry clay mini kit","price":9.0,"themes":["creative"],"p":["creative"],"l":["time"],"o":[],"s":[],"c":[],"sn":[],"k":["clay","pottery","crafts","art"],"sent":0.4},
+{"name":"Brush pens (12 colors)","price":10.0,"themes":["creative"],"p":["creative"],"l":[],"o":[],"s":[],"c":["pink","blue","green"],"sn":[],"k":["pens","art","lettering","drawing"],"sent":0.4},
+{"name":"Dotted bullet journal","price":12.0,"themes":["creative","bookworm"],"p":["creative","bookworm"],"l":["words"],"o":[],"s":[],"c":[],"sn":[],"k":["journal","notebook","paper","journaling","writing"],"sent":0.4},
+{"name":"Instant film (10 shots)","price":14.0,"themes":["creative","keepsake"],"p":["creative","adventurer"],"l":["time"],"o":[],"s":[],"c":[],"sn":[],"k":["film","camera","photo","photography"],"sent":0.8},
+{"name":"Travel watercolor set","price":16.0,"themes":["creative"],"p":["creative"],"l":["time"],"o":[],"s":[],"c":["blue","pink","lavender"],"sn":[],"k":["paint","watercolor","art","painting"],"sent":0.4},
+{"name":"\"I'm cooking you dinner\" coupon","price":1.0,"themes":["foodie"],"p":["foodie"],"l":["acts","time"],"o":["apology","anniversary","justBecause"],"s":[],"c":[],"sn":[],"k":["coupon","cooking","dinner","paper"],"sent":0.85},
+{"name":"Flaky sea salt tin","price":4.0,"themes":["foodie"],"p":["foodie"],"l":[],"o":[],"s":[],"c":[],"sn":["salty"],"k":["salt","cooking","kitchen"],"sent":0.4},
+{"name":"Single-origin dark chocolate bar","price":4.0,"themes":["foodie","sweetTooth"],"p":["foodie"],"l":[],"o":[],"s":[],"c":["gold"],"sn":["chocolate"],"k":["chocolate","dark chocolate","cocoa"],"sent":0.4},
+{"name":"Gourmet crackers","price":5.0,"themes":["foodie","picnic"],"p":["foodie"],"l":[],"o":[],"s":[],"c":[],"sn":["salty"],"k":["crackers","gluten","wheat"],"sent":0.4},
+{"name":"Handwritten recipe card set","price":6.0,"themes":["foodie","keepsake"],"p":["foodie","cozy"],"l":["words","time"],"o":[],"s":[],"c":[],"sn":[],"k":["recipe","cards","paper","cooking","baking"],"sent":0.85},
+{"name":"Fig jam","price":7.0,"themes":["foodie","picnic"],"p":["foodie"],"l":[],"o":[],"s":[],"c":[],"sn":["sweet"],"k":["jam","fig","fruit"],"sent":0.4},
+{"name":"Hot honey","price":9.0,"themes":["foodie","picnic"],"p":["foodie"],"l":[],"o":[],"s":[],"c":[],"sn":["sweet"],"k":["honey","spicy","chili"],"sent":0.4},
+{"name":"Aged balsamic glaze","price":9.0,"themes":["foodie"],"p":["foodie"],"l":[],"o":[],"s":[],"c":[],"sn":[],"k":["balsamic","vinegar","cooking"],"sent":0.4},
+{"name":"Artisan olive oil (mini bottle)","price":10.0,"themes":["foodie"],"p":["foodie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["olive oil","cooking","kitchen"],"sent":0.4},
+{"name":"Truffle sea salt","price":12.0,"themes":["foodie"],"p":["foodie"],"l":[],"o":[],"s":[],"c":[],"sn":["salty"],"k":["truffle","salt","mushroom","cooking"],"sent":0.4},
+{"name":"Hand-blended spice set","price":14.0,"themes":["foodie"],"p":["foodie"],"l":["acts","time"],"o":[],"s":[],"c":[],"sn":[],"k":["spices","cooking","kitchen","spicy"],"sent":0.4},
+{"name":"Mini cheese knife set","price":15.0,"themes":["foodie","picnic"],"p":["foodie"],"l":["gifts"],"o":[],"s":[],"c":[],"sn":[],"k":["knife","cheese","charcuterie","kitchen"],"sent":0.4},
+{"name":"\"Workout buddy for a month\" coupon","price":1.0,"themes":["fitness"],"p":["fitness"],"l":["time","acts"],"o":[],"s":[],"c":[],"sn":[],"k":["coupon","workout","gym","paper"],"sent":0.8},
+{"name":"Sweat-proof hair ties","price":3.0,"themes":["fitness","glamNight"],"p":["fitness","glam"],"l":[],"o":[],"s":[],"c":["pink","black","lavender"],"sn":[],"k":["hair ties","workout"],"sent":0.4},
+{"name":"Electrolyte drink mix","price":5.0,"themes":["fitness","adventure"],"p":["fitness","adventurer"],"l":[],"o":[],"s":[],"c":[],"sn":["healthy"],"k":["electrolyte","workout","running"],"sent":0.4},
+{"name":"Mini massage ball","price":6.0,"themes":["fitness","spa"],"p":["fitness"],"l":["touch","acts"],"o":[],"s":[],"c":[],"sn":[],"k":["massage","ball","recovery","yoga"],"sent":0.4},
+{"name":"Cooling towel","price":7.0,"themes":["fitness","adventure"],"p":["fitness","adventurer"],"l":["acts"],"o":[],"s":[],"c":["blue","pink"],"sn":[],"k":["towel","workout","running"],"sent":0.4},
+{"name":"Dried fruit & nut mix","price":7.0,"themes":["fitness"],"p":["fitness"],"l":[],"o":[],"s":[],"c":[],"sn":["healthy"],"k":["nut","almond","cashew","dried fruit"],"sent":0.4},
+{"name":"Muscle rub balm","price":8.0,"themes":["fitness","spa"],"p":["fitness"],"l":["touch","acts"],"o":[],"s":["fresh","woodsy"],"c":[],"sn":[],"k":["menthol","balm","recovery","fragrance"],"sent":0.4},
+{"name":"Protein bar variety pack","price":10.0,"themes":["fitness"],"p":["fitness"],"l":[],"o":[],"s":[],"c":[],"sn":["healthy"],"k":["protein","whey","dairy","soy","nut","peanut","gym"],"sent":0.4},
+{"name":"Resistance band set","price":12.0,"themes":["fitness"],"p":["fitness"],"l":["acts"],"o":[],"s":[],"c":["pink","black","lavender"],"sn":[],"k":["bands","latex","workout","gym","yoga"],"sent":0.4},
+{"name":"Gym towel embroidered with their initial","price":14.0,"themes":["fitness"],"p":["fitness"],"l":["gifts"],"o":[],"s":[],"c":[],"sn":[],"k":["towel","embroidered","gym"],"sent":0.6},
+{"name":"\"Read to me tonight\" coupon","price":1.0,"themes":["bookworm"],"p":["bookworm"],"l":["time","touch"],"o":[],"s":[],"c":[],"sn":[],"k":["coupon","reading","paper"],"sent":0.85},
+{"name":"Bookish sticker pack","price":3.0,"themes":["bookworm"],"p":["bookworm","creative"],"l":[],"o":[],"s":[],"c":["lavender","green"],"sn":[],"k":["stickers","reading","book"],"sent":0.4},
+{"name":"Butter shortbread cookies","price":5.0,"themes":["bookworm","sweetTooth","cozyNight"],"p":["cozy","bookworm"],"l":[],"o":[],"s":[],"c":[],"sn":["sweet"],"k":["cookies","butter","dairy","gluten","wheat","baking"],"sent":0.4},
+{"name":"Annotating kit (tabs & highlighters)","price":6.0,"themes":["bookworm","creative"],"p":["bookworm","creative"],"l":[],"o":[],"s":[],"c":["pink","lavender","yellow"],"sn":[],"k":["tabs","highlighter","reading","book"],"sent":0.4},
+{"name":"\"Bookish\" vanilla black tea","price":7.0,"themes":["bookworm"],"p":["bookworm","cozy"],"l":[],"o":[],"s":["vanilla"],"c":[],"sn":["coffeeTea"],"k":["tea","caffeine","reading"],"sent":0.4},
+{"name":"Leather bookmark with their initials","price":9.0,"themes":["bookworm","keepsake"],"p":["bookworm"],"l":["gifts"],"o":[],"s":[],"c":[],"sn":[],"k":["leather","bookmark","book","reading"],"sent":0.75},
+{"name":"Clip-on book light","price":12.0,"themes":["bookworm","techTreats"],"p":["bookworm","techie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["light","reading","book","battery"],"sent":0.4},
+{"name":"Paperback from their wishlist","price":15.0,"themes":["bookworm"],"p":["bookworm"],"l":["gifts"],"o":[],"s":[],"c":[],"sn":[],"k":["book","novel","paperback","reading","books"],"sent":0.5},
+{"name":"\"Old Library\" candle","price":16.0,"themes":["bookworm","cozyNight"],"p":["bookworm","cozy"],"l":[],"o":[],"s":["woodsy","vanilla"],"c":[],"sn":[],"k":["candle","scented","fragrance","reading"],"sent":0.4},
+{"name":"\"Get ready together\" night-out coupon","price":1.0,"themes":["glamNight"],"p":["glam"],"l":["time"],"o":["birthday","valentines"],"s":[],"c":[],"sn":[],"k":["coupon","date","paper","fashion"],"sent":0.8},
+{"name":"Velvet scrunchie set","price":7.0,"themes":["glamNight"],"p":["glam"],"l":[],"o":[],"s":[],"c":["pink","black","red","lavender"],"sn":[],"k":["velvet","scrunchie","hair","fashion"],"sent":0.4},
+{"name":"Nail polish duo","price":10.0,"themes":["glamNight"],"p":["glam"],"l":[],"o":[],"s":[],"c":["red","pink","lavender","black"],"sn":[],"k":["nail polish","beauty","makeup"],"sent":0.4},
+{"name":"Tinted lip oil","price":12.0,"themes":["glamNight"],"p":["glam"],"l":["touch"],"o":[],"s":[],"c":["pink","red"],"sn":[],"k":["lip","makeup","beauty"],"sent":0.4},
+{"name":"Engraved gold-tone compact mirror","price":14.0,"themes":["glamNight","keepsake"],"p":["glam"],"l":["gifts","words"],"o":[],"s":[],"c":["gold"],"sn":[],"k":["mirror","engraved","metal","makeup"],"sent":0.75},
+{"name":"Satin hair scarf","price":15.0,"themes":["glamNight"],"p":["glam"],"l":["gifts"],"o":[],"s":[],"c":["pink","gold","black","red"],"sn":[],"k":["satin","scarf","hair","fashion"],"sent":0.4},
+{"name":"Mini perfume rollerball","price":18.0,"themes":["glamNight"],"p":["glam"],"l":["gifts"],"o":[],"s":["floral","vanilla"],"c":[],"sn":[],"k":["perfume","fragrance","beauty"],"sent":0.4},
+{"name":"Sparkling rosé lemonade (alcohol-free)","price":6.0,"themes":["glamNight","picnic"],"p":["glam"],"l":["time"],"o":["valentines","anniversary"],"s":["citrus"],"c":["pink"],"sn":["sweet"],"k":["lemonade","lemon","citrus","sparkling"],"sent":0.4},
+{"name":"\"Free tech support for life\" coupon","price":1.0,"themes":["techTreats"],"p":["techie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["coupon","tech","paper"],"sent":0.7},
+{"name":"Cable organizer clips","price":5.0,"themes":["techTreats"],"p":["techie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["cable","organizer","tech"],"sent":0.4},
+{"name":"Screen cleaner & webcam cover","price":5.0,"themes":["techTreats"],"p":["techie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["cleaner","screen","tech"],"sent":0.4},
+{"name":"Cute wireless earbud case","price":8.0,"themes":["techTreats"],"p":["techie","glam"],"l":[],"o":[],"s":[],"c":["pink","lavender","black"],"sn":[],"k":["case","earbuds","music","tech"],"sent":0.4},
+{"name":"Braided fast-charge cable","price":12.0,"themes":["techTreats"],"p":["techie"],"l":["acts"],"o":[],"s":[],"c":["pink","black","neutral"],"sn":[],"k":["cable","charger","tech"],"sent":0.4},
+{"name":"Engraved wooden phone stand","price":14.0,"themes":["techTreats"],"p":["techie"],"l":["gifts"],"o":[],"s":[],"c":["neutral"],"sn":[],"k":["wood","stand","engraved","tech"],"sent":0.55},
+{"name":"Mini Bluetooth speaker","price":20.0,"themes":["techTreats","picnic"],"p":["techie","adventurer"],"l":["time"],"o":[],"s":[],"c":["pink","black","blue"],"sn":[],"k":["speaker","music","tech"],"sent":0.4},
+{"name":"Pocket power bank","price":22.0,"themes":["techTreats","adventure"],"p":["techie","adventurer"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["battery","power bank","charger","travel","tech"],"sent":0.4},
+{"name":"Bluetooth key finder tag","price":25.0,"themes":["techTreats"],"p":["techie"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["tracker","keys","tech","gaming"],"sent":0.4},
+{"name":"\"Our song\" handwritten playlist card","price":2.0,"themes":["picnic","keepsake","movieNight"],"p":[],"l":["words","time"],"o":["anniversary","valentines"],"s":[],"c":[],"sn":[],"k":["playlist","music","card","paper"],"sent":0.95},
+{"name":"Glass-bottle lemonade","price":4.0,"themes":["picnic"],"p":[],"l":[],"o":[],"s":["citrus"],"c":["yellow"],"sn":["sweet"],"k":["lemonade","lemon","citrus"],"sent":0.4},
+{"name":"Fresh market berries","price":6.0,"themes":["picnic"],"p":["foodie","fitness"],"l":[],"o":[],"s":[],"c":["red"],"sn":["healthy","sweet"],"k":["strawberries","berries","fruit"],"sent":0.4},
+{"name":"Reusable bamboo utensil set","price":8.0,"themes":["picnic","adventure"],"p":["adventurer"],"l":["acts"],"o":[],"s":[],"c":[],"sn":[],"k":["bamboo","utensils","camping"],"sent":0.4},
+{"name":"Pastel macarons (6)","price":12.0,"themes":["picnic","sweetTooth","glamNight"],"p":["glam","foodie"],"l":[],"o":[],"s":[],"c":["pink","lavender","yellow"],"sn":["sweet"],"k":["macarons","almond","nut","egg","dairy","baking"],"sent":0.4},
+{"name":"Waterproof picnic blanket","price":22.0,"themes":["picnic","adventure"],"p":["adventurer","cozy"],"l":["time","touch"],"o":[],"s":[],"c":["red","neutral","blue"],"sn":[],"k":["blanket","picnic","beach"],"sent":0.4},
+{"name":"Conversation heart candies","price":3.0,"themes":["sweetTooth","keepsake"],"p":[],"l":["words"],"o":["valentines"],"s":[],"c":["pink","red"],"sn":["sweet"],"k":["candy","sugar"],"sent":0.6},
+{"name":"Gummy candy jar","price":5.0,"themes":["sweetTooth"],"p":[],"l":[],"o":[],"s":[],"c":["red","pink"],"sn":["sweet"],"k":["gummies","candy","gelatin","sugar"],"sent":0.4},
+{"name":"Sea salt caramels","price":7.0,"themes":["sweetTooth"],"p":["foodie"],"l":[],"o":[],"s":[],"c":["gold"],"sn":["sweet","salty"],"k":["caramel","dairy","butter","sugar"],"sent":0.4},
+{"name":"Chocolate truffles (box of 6)","price":12.0,"themes":["sweetTooth"],"p":["foodie","glam"],"l":["gifts"],"o":["valentines","anniversary"],"s":[],"c":["red","gold"],"sn":["chocolate","sweet"],"k":["chocolate","truffles","dairy"],"sent":0.4},
+{"name":"Cookie decorating kit","price":14.0,"themes":["sweetTooth","creative"],"p":["creative","foodie"],"l":["time"],"o":["holiday"],"s":[],"c":[],"sn":["sweet"],"k":["cookies","gluten","egg","sugar","baking"],"sent":0.4},
+{"name":"Wax-sealed love letter","price":4.0,"themes":["keepsake"],"p":[],"l":["words"],"o":["anniversary","valentines","apology"],"s":[],"c":["red","gold"],"sn":[],"k":["letter","wax","paper","writing"],"sent":1.0},
+{"name":"\"Love coupon\" booklet","price":5.0,"themes":["keepsake"],"p":[],"l":["acts","time","touch"],"o":["apology","justBecause","valentines"],"s":[],"c":[],"sn":[],"k":["coupon","paper"],"sent":0.8},
+{"name":"Jar of \"52 reasons I love you\" notes","price":6.0,"themes":["keepsake"],"p":[],"l":["words"],"o":["valentines","anniversary","justBecause"],"s":[],"c":["pink","red"],"sn":[],"k":["notes","jar","paper","writing"],"sent":1.0},
+{"name":"Printed photos of you two (10)","price":8.0,"themes":["keepsake","creative"],"p":[],"l":["time","words"],"o":["anniversary"],"s":[],"c":[],"sn":[],"k":["photos","photography"],"sent":0.9},
+{"name":"Dried flower mini bouquet","price":12.0,"themes":["keepsake"],"p":["glam","cozy"],"l":["gifts"],"o":[],"s":["floral"],"c":["pink","lavender","neutral"],"sn":[],"k":["flowers","flower","bouquet","pollen","plants"],"sent":0.7},
+{"name":"Pressed rose in a little frame","price":15.0,"themes":["keepsake"],"p":[],"l":["gifts","words"],"o":["anniversary","valentines"],"s":["floral"],"c":["red","pink"],"sn":[],"k":["rose","flower","flowers","frame"],"sent":0.9},
+{"name":"Mini photo album of your memories","price":18.0,"themes":["keepsake"],"p":[],"l":["words","time"],"o":["anniversary","birthday"],"s":[],"c":[],"sn":[],"k":["photos","album","scrapbook"],"sent":1.0}
+];
+const BASKET_THEMES = [
+{"id":"cozyNight","title":"Cozy Night In","emoji":"🕯️","tagline":"Soft blankets, warm drinks and a slow evening together.","p":["cozy","bookworm"],"l":["time","touch"]},
+{"id":"spa","title":"Self-Care Spa","emoji":"🛁","tagline":"Everything they need for a long, peaceful pamper night.","p":["glam","cozy","fitness"],"l":["touch","acts"]},
+{"id":"coffeeMorning","title":"Coffee Lover's Morning","emoji":"☕️","tagline":"A slow, sweet morning from the very first sip.","p":["foodie","bookworm","cozy"],"l":["acts","time"]},
+{"id":"movieNight","title":"Movie Night for Two","emoji":"🍿","tagline":"Snacks, blankets and a reason to stay in together.","p":["cozy","techie"],"l":["time","touch"]},
+{"id":"adventure","title":"Adventure Ready","emoji":"🧭","tagline":"Packed for the next trail, road trip or spontaneous plan.","p":["adventurer","fitness"],"l":["time","acts"]},
+{"id":"creative","title":"Creative Spark","emoji":"🎨","tagline":"Little tools to make something beautiful.","p":["creative"],"l":["time","gifts"]},
+{"id":"foodie","title":"Foodie Tasting Box","emoji":"🧀","tagline":"Small-batch goodies for a happy palate.","p":["foodie"],"l":["gifts","acts","time"]},
+{"id":"fitness","title":"Active & Energized","emoji":"💪","tagline":"Fuel, recovery and a little motivation from you.","p":["fitness","adventurer"],"l":["acts","touch"]},
+{"id":"bookworm","title":"Bookworm's Escape","emoji":"📖","tagline":"A new chapter, a cup of tea and nowhere to be.","p":["bookworm","cozy"],"l":["time","gifts"]},
+{"id":"glamNight","title":"Glam Night Out","emoji":"💄","tagline":"Get-ready treats for feeling absolutely stunning.","p":["glam"],"l":["gifts","touch","words"]},
+{"id":"techTreats","title":"Tech & Treats","emoji":"🎧","tagline":"Clever gadgets and little upgrades they'll use every day.","p":["techie"],"l":["acts","gifts"]},
+{"id":"picnic","title":"Picnic for Two","emoji":"🧺","tagline":"A blanket, good snacks and a sunny afternoon together.","p":["adventurer","foodie","cozy"],"l":["time"]},
+{"id":"sweetTooth","title":"Sweet Tooth Sampler","emoji":"🍫","tagline":"A little box of happiness, one treat at a time.","p":["foodie","cozy"],"l":["gifts"]},
+{"id":"keepsake","title":"Love Letters & Keepsakes","emoji":"💌","tagline":"Heartfelt words and tiny treasures to keep forever.","p":["creative","bookworm"],"l":["words","gifts"]}
+];
+
+/* More basket items, including bigger pieces so larger budgets get fuller baskets. */
+(() => {
+  const I = (name, price, themes, t = {}) => ({
+    name, price, themes, p: t.p || [], l: t.l || [], o: t.o || [], s: t.s || [], c: t.c || [], sn: t.sn || [],
+    k: t.k || [], sent: t.sent ?? 0.4
+  });
+  BASKET_ITEMS.push(
+    // Cozy night in
+    I("Plush faux-fur throw pillow", 24, ["cozyNight", "movieNight"], { p: ["cozy"], l: ["touch"], c: ["pink", "neutral"], k: ["pillow", "cozy"] }),
+    I("Large wooden-wick candle", 32, ["cozyNight", "bookworm"], { p: ["cozy", "bookworm"], l: ["time"], s: ["woodsy", "vanilla"], k: ["candle", "scented", "fragrance"] }),
+    I("Hot chocolate bombs (3)", 9, ["cozyNight", "sweetTooth"], { p: ["cozy"], l: ["time"], o: ["holiday"], sn: ["chocolate", "sweet"], k: ["chocolate", "cocoa", "dairy", "milk"] }),
+    I("Mini butter cookie tin", 4, ["cozyNight", "sweetTooth", "coffeeMorning"], { sn: ["sweet"], k: ["cookies", "butter", "dairy", "gluten", "wheat"] }),
+    I("Soft waffle-knit robe", 45, ["cozyNight", "spa"], { p: ["cozy", "glam"], l: ["touch", "acts"], c: ["neutral", "pink"], k: ["robe", "cotton"] }),
+    I("Warm LED fairy lights", 9, ["cozyNight", "movieNight", "picnic"], { p: ["cozy"], l: ["time"], c: ["gold"], k: ["lights", "battery"] }),
+    // Spa
+    I("Mulberry silk pillowcase", 28, ["spa", "glamNight"], { p: ["glam", "cozy"], l: ["touch"], c: ["pink", "neutral", "lavender"], k: ["silk", "pillowcase", "sleep", "beauty"] }),
+    I("Bamboo bath tray", 38, ["spa"], { p: ["cozy", "glam"], l: ["acts", "time"], c: ["neutral"], k: ["bath", "tray", "wood", "bamboo"] }),
+    I("Aroma diffuser with oils", 34, ["spa", "cozyNight"], { p: ["cozy"], l: ["acts"], s: ["floral", "citrus", "fresh"], k: ["diffuser", "oil", "essential oil", "fragrance"] }),
+    I("Vanilla lip scrub", 4, ["spa", "glamNight"], { p: ["glam"], l: ["touch"], s: ["vanilla"], k: ["lip", "scrub", "sugar", "beauty"] }),
+    I("Plush spa slippers", 12, ["spa", "cozyNight"], { p: ["cozy", "glam"], l: ["acts", "touch"], c: ["pink", "neutral"], k: ["slippers"] }),
+    I("Cotton bath towel set (2)", 26, ["spa"], { p: ["cozy"], l: ["acts"], c: ["neutral", "pink", "blue"], k: ["towel", "cotton", "bath"] }),
+    // Coffee morning
+    I("Pair of stoneware mugs", 22, ["coffeeMorning", "cozyNight"], { p: ["cozy", "foodie"], l: ["time"], c: ["neutral", "pink", "green"], sent: 0.55, k: ["mug", "ceramic"] }),
+    I("Mini French press", 24, ["coffeeMorning"], { p: ["foodie"], l: ["acts"], sn: ["coffeeTea"], k: ["french press", "coffee", "glass"] }),
+    I("Maple leaf cookies", 4, ["coffeeMorning", "sweetTooth"], { sn: ["sweet"], k: ["cookies", "maple", "gluten", "wheat", "butter", "dairy"] }),
+    I("Local café gift card", 25, ["coffeeMorning", "bookworm"], { p: ["foodie", "bookworm"], l: ["gifts", "time"], sn: ["coffeeTea"], k: ["gift card", "coffee", "cafe"] }),
+    I("Spiced chai concentrate", 11, ["coffeeMorning", "cozyNight"], { p: ["cozy", "foodie"], s: ["woodsy"], sn: ["coffeeTea"], k: ["chai", "tea", "caffeine", "spices"] }),
+    // Movie night
+    I("Personalized popcorn tin", 18, ["movieNight"], { p: ["cozy"], l: ["time", "gifts"], c: ["red"], sent: 0.6, k: ["popcorn", "tin", "movie"] }),
+    I("Pizza night gift card", 25, ["movieNight", "foodie"], { p: ["foodie", "cozy"], l: ["time", "acts"], k: ["gift card", "pizza", "gluten", "wheat", "cheese", "dairy"] }),
+    I("Movie-theater candy box", 4, ["movieNight", "sweetTooth"], { sn: ["sweet"], c: ["red"], k: ["candy", "sugar", "movie"] }),
+    I("Cozy couple's blanket (extra wide)", 42, ["movieNight", "cozyNight"], { p: ["cozy"], l: ["touch", "time"], o: ["anniversary", "valentines"], c: ["neutral", "pink", "red"], sent: 0.55, k: ["blanket", "fleece"] }),
+    // Adventure
+    I("Packable rain jacket", 45, ["adventure"], { p: ["adventurer", "fitness"], l: ["acts"], c: ["green", "blue", "red"], k: ["jacket", "hiking", "travel"] }),
+    I("Framed trail map of their favorite park", 28, ["adventure", "keepsake"], { p: ["adventurer"], l: ["words", "time"], o: ["anniversary"], sent: 0.85, k: ["map", "print", "frame", "hiking"] }),
+    I("Compact binoculars", 24, ["adventure"], { p: ["adventurer"], l: ["time"], k: ["binoculars", "hiking", "birds", "travel"] }),
+    I("Honey granola clusters", 5, ["adventure", "fitness", "coffeeMorning"], { p: ["adventurer", "fitness"], sn: ["healthy", "sweet"], k: ["granola", "oats", "honey", "nut", "almond"] }),
+    I("Trail bandana", 6, ["adventure"], { p: ["adventurer"], c: ["red", "blue", "green"], k: ["bandana", "hiking", "fashion"] }),
+    // Creative
+    I("Paint-by-numbers kit", 22, ["creative", "cozyNight"], { p: ["creative", "cozy"], l: ["time"], k: ["paint", "painting", "art", "crafts"] }),
+    I("Calligraphy pen set", 18, ["creative", "keepsake"], { p: ["creative", "bookworm"], l: ["words"], k: ["pens", "lettering", "writing", "art"] }),
+    I("Mini canvases (3)", 6, ["creative"], { p: ["creative"], k: ["canvas", "paint", "art"] }),
+    I("Linocut starter kit", 28, ["creative"], { p: ["creative"], l: ["gifts"], k: ["printmaking", "art", "crafts"] }),
+    I("Gold leaf craft kit", 12, ["creative", "glamNight"], { p: ["creative", "glam"], c: ["gold"], k: ["gold leaf", "crafts", "art"] }),
+    // Foodie
+    I("Small-batch pasta sauce", 9, ["foodie"], { p: ["foodie"], l: ["acts", "time"], k: ["pasta sauce", "tomato", "cooking"] }),
+    I("Infused honey trio", 18, ["foodie", "coffeeMorning", "picnic"], { p: ["foodie"], sn: ["sweet"], k: ["honey"] }),
+    I("Artisan cheese voucher", 20, ["foodie", "picnic"], { p: ["foodie"], l: ["gifts"], sn: ["salty"], k: ["cheese", "dairy", "charcuterie"] }),
+    I("Chocolate-dipped figs", 10, ["foodie", "sweetTooth"], { p: ["foodie"], sn: ["chocolate", "sweet"], k: ["chocolate", "fig", "fruit", "dairy"] }),
+    I("Gourmet pickles jar", 7, ["foodie", "picnic"], { p: ["foodie"], sn: ["salty"], k: ["pickles", "jar"] }),
+    I("Acacia serving board", 26, ["foodie", "picnic"], { p: ["foodie"], l: ["time"], c: ["neutral"], k: ["board", "wood", "charcuterie", "kitchen"] }),
+    // Fitness
+    I("Grip yoga socks", 9, ["fitness"], { p: ["fitness"], l: ["acts"], c: ["pink", "black", "lavender"], k: ["socks", "yoga", "pilates"] }),
+    I("Insulated shaker bottle", 16, ["fitness"], { p: ["fitness"], l: ["acts"], c: ["pink", "black", "blue"], k: ["bottle", "gym", "protein"] }),
+    I("Mini foam roller", 18, ["fitness", "spa"], { p: ["fitness"], l: ["touch", "acts"], k: ["foam roller", "recovery", "yoga"] }),
+    I("Smoothie shop gift card", 20, ["fitness"], { p: ["fitness"], l: ["gifts"], sn: ["healthy"], k: ["gift card", "smoothie", "fruit"] }),
+    I("Recovery bath soak", 10, ["fitness", "spa"], { p: ["fitness"], l: ["touch"], s: ["fresh"], k: ["bath", "salts", "epsom", "fragrance"] }),
+    I("Wireless sport earbuds case strap", 7, ["fitness", "techTreats"], { p: ["fitness", "techie"], c: ["black", "pink"], k: ["strap", "earbuds", "music", "tech"] }),
+    // Bookworm
+    I("Hardcover from their wishlist", 28, ["bookworm"], { p: ["bookworm"], l: ["gifts"], sent: 0.55, k: ["book", "hardcover", "novel", "reading", "books"] }),
+    I("Padded book sleeve", 16, ["bookworm"], { p: ["bookworm"], c: ["pink", "green", "lavender"], k: ["book sleeve", "fabric", "reading", "book"] }),
+    I("Reading wedge pillow", 32, ["bookworm", "cozyNight"], { p: ["bookworm", "cozy"], l: ["touch", "acts"], c: ["neutral", "pink"], k: ["pillow", "reading"] }),
+    I("Literary canvas tote", 14, ["bookworm"], { p: ["bookworm"], c: ["neutral"], k: ["tote", "canvas", "book", "reading"] }),
+    I("Teapot for one", 18, ["bookworm", "coffeeMorning"], { p: ["bookworm", "cozy"], l: ["acts"], sn: ["coffeeTea"], k: ["teapot", "tea", "ceramic"] }),
+    // Glam
+    I("Pearl hair clips", 9, ["glamNight"], { p: ["glam"], c: ["neutral", "gold"], k: ["hair clips", "pearl", "hair", "fashion"] }),
+    I("Quilted makeup bag", 12, ["glamNight", "spa"], { p: ["glam"], l: ["gifts"], c: ["pink", "black"], k: ["makeup bag", "makeup"] }),
+    I("Gold hoop earrings", 28, ["glamNight", "keepsake"], { p: ["glam"], l: ["gifts"], c: ["gold"], sent: 0.6, k: ["earrings", "jewelry", "gold", "metal", "nickel"] }),
+    I("Travel perfume spray", 38, ["glamNight"], { p: ["glam"], l: ["gifts", "touch"], s: ["floral", "vanilla"], k: ["perfume", "fragrance", "beauty"] }),
+    I("Glow highlighter", 16, ["glamNight"], { p: ["glam"], c: ["gold"], k: ["highlighter", "makeup", "beauty"] }),
+    I("Makeup brush set", 24, ["glamNight"], { p: ["glam", "creative"], l: ["acts"], c: ["pink", "gold"], k: ["brushes", "makeup", "beauty"] }),
+    // Tech
+    I("Phone grip with their initial", 10, ["techTreats"], { p: ["techie"], l: ["gifts"], sent: 0.5, k: ["phone grip", "tech"] }),
+    I("Wireless charging pad", 22, ["techTreats"], { p: ["techie"], l: ["acts"], c: ["neutral", "black"], k: ["charger", "tech"] }),
+    I("Pocket photo printer", 45, ["techTreats", "creative", "keepsake"], { p: ["techie", "creative"], l: ["time", "words"], sent: 0.7, k: ["printer", "photo", "photography", "tech"] }),
+    I("Smart plug", 15, ["techTreats"], { p: ["techie"], l: ["acts"], k: ["smart plug", "tech"] }),
+    I("Earbud cleaning kit", 6, ["techTreats"], { p: ["techie"], l: ["acts"], k: ["cleaning", "earbuds", "tech"] }),
+    I("Gaming snack crate", 12, ["techTreats", "movieNight"], { p: ["techie"], sn: ["salty", "sweet"], k: ["snacks", "chips", "candy", "gaming"] }),
+    // Picnic
+    I("Insulated picnic tote", 26, ["picnic"], { p: ["adventurer", "foodie"], l: ["acts", "time"], c: ["red", "neutral"], k: ["tote", "cooler", "picnic"] }),
+    I("Stackable picnic plates (2)", 12, ["picnic"], { l: ["time"], c: ["neutral", "pink"], k: ["plates", "picnic"] }),
+    I("Fresh-baked baguette", 5, ["picnic", "foodie"], { p: ["foodie"], sn: ["salty"], k: ["bread", "baguette", "gluten", "wheat"] }),
+    I("Citronella tin candle", 6, ["picnic", "adventure"], { p: ["adventurer"], s: ["citrus"], k: ["candle", "citronella", "fragrance", "camping"] }),
+    I("Wildflower seed packet", 3, ["picnic", "keepsake"], { l: ["gifts"], s: ["floral"], sent: 0.6, k: ["seeds", "flowers", "gardening", "plants"] }),
+    // Sweets
+    I("Mini cupcake box (4)", 12, ["sweetTooth"], { p: ["foodie"], sn: ["sweet"], c: ["pink"], k: ["cupcakes", "gluten", "egg", "dairy", "baking"] }),
+    I("Cotton candy jar", 6, ["sweetTooth", "movieNight"], { sn: ["sweet"], c: ["pink", "blue"], k: ["candy", "sugar", "cotton candy"] }),
+    I("Chocolate-covered strawberries (6)", 18, ["sweetTooth", "picnic"], { l: ["gifts"], o: ["valentines", "anniversary"], c: ["red"], sn: ["chocolate", "sweet"], sent: 0.5, k: ["chocolate", "strawberries", "fruit", "dairy"] }),
+    I("Sour rainbow strips", 4, ["sweetTooth"], { sn: ["sweet"], c: ["yellow", "pink"], k: ["candy", "sugar"] }),
+    I("Luxury chocolate bar trio", 15, ["sweetTooth", "foodie"], { p: ["foodie"], l: ["gifts"], c: ["gold"], sn: ["chocolate"], k: ["chocolate", "dairy", "cocoa"] }),
+    // Keepsakes
+    I("Engraved keychain with your date", 12, ["keepsake"], { l: ["words", "gifts"], o: ["anniversary", "valentines"], sent: 0.9, k: ["keychain", "engraved", "metal"] }),
+    I("Hand-bound memory journal", 22, ["keepsake", "bookworm"], { p: ["bookworm", "creative"], l: ["words", "time"], sent: 0.95, k: ["journal", "paper", "writing"] }),
+    I("Star map print of your first date", 25, ["keepsake"], { l: ["words", "gifts"], o: ["anniversary", "valentines"], c: ["black", "blue", "gold"], sent: 1, k: ["star map", "print", "poster"] }),
+    I("Couple's question card game", 14, ["keepsake", "movieNight", "picnic"], { l: ["time", "words"], sent: 0.7, k: ["cards", "game", "questions"] })
+  );
+})();
+
+/* ===== Little Love Notes: offline recommendation engine (same rules as the iPhone app) ===== */
+
+const OPTIONS = {
+  occasion: [
+    { id: "birthday", title: "Birthday", emoji: "🎂", sub: "Their special day" },
+    { id: "anniversary", title: "Anniversary", emoji: "💍", sub: "Celebrating the two of you" },
+    { id: "valentines", title: "Valentine's Day", emoji: "💘", sub: "All the hearts" },
+    { id: "justBecause", title: "Just Because", emoji: "🌷", sub: "No reason needed" },
+    { id: "apology", title: "I'm Sorry", emoji: "🕊️", sub: "A sincere way to make it right" },
+    { id: "holiday", title: "Holiday", emoji: "🎄", sub: "Something to unwrap" }
+  ],
+  length: [
+    { id: "new", title: "Just Getting Started", emoji: "🌱", sub: "A few weeks or months" },
+    { id: "underOneYear", title: "Under 1 Year", emoji: "🌸", sub: "Still in the sweet beginning" },
+    { id: "oneToThree", title: "1–3 Years", emoji: "🌹", sub: "You know each other well" },
+    { id: "threePlus", title: "3+ Years", emoji: "💞", sub: "A love with history" }
+  ],
+  budget: [
+    { id: "twentyFive", title: "$25", emoji: "💌", sub: "5–6 sweet little things", limit: 25, min: 5, max: 6, container: ["Kraft gift bag with tissue", 2], kind: "bag" },
+    { id: "fifty", title: "$50", emoji: "🎀", sub: "About 6–7 treats", limit: 50, min: 6, max: 7, container: ["Small woven basket", 6], kind: "basket" },
+    { id: "hundred", title: "$100", emoji: "🎁", sub: "A full basket, 7–8 items", limit: 100, min: 7, max: 8, container: ["Woven basket with crinkle paper", 10], kind: "basket" },
+    { id: "twoHundredPlus", title: "$200+", emoji: "💎", sub: "All out, 8–10 items", limit: 300, min: 8, max: 10, container: ["Keepsake wooden crate", 18], kind: "crate" }
+  ],
+  loveLanguage: [
+    { id: "words", title: "Words of Affirmation", emoji: "💌", sub: "Sweet notes and kind words" },
+    { id: "gifts", title: "Receiving Gifts", emoji: "🎁", sub: "Thoughtful little surprises" },
+    { id: "time", title: "Quality Time", emoji: "⏳", sub: "Your full attention" },
+    { id: "touch", title: "Physical Touch", emoji: "🤍", sub: "Hugs, cuddles, holding hands" },
+    { id: "acts", title: "Acts of Service", emoji: "🧺", sub: "Helping make life easier" }
+  ],
+  personality: [
+    { id: "cozy", title: "Cozy Homebody", emoji: "🕯️" },
+    { id: "adventurer", title: "Adventurer", emoji: "🧭" },
+    { id: "creative", title: "Creative Soul", emoji: "🎨" },
+    { id: "foodie", title: "Foodie", emoji: "🍝" },
+    { id: "fitness", title: "Fitness Lover", emoji: "🏃" },
+    { id: "bookworm", title: "Bookworm", emoji: "📚" },
+    { id: "glam", title: "Glam", emoji: "💄" },
+    { id: "techie", title: "Techie", emoji: "🎧" }
+  ],
+  colors: [
+    { id: "red", title: "Red", swatch: "#B3263E" },
+    { id: "pink", title: "Pink", swatch: "#F2A7B5" },
+    { id: "lavender", title: "Lavender", swatch: "#C3B1E1" },
+    { id: "blue", title: "Blue", swatch: "#9CC3E6" },
+    { id: "green", title: "Green", swatch: "#A8C3A0" },
+    { id: "yellow", title: "Yellow", swatch: "#F6DE8D" },
+    { id: "neutral", title: "Neutrals", swatch: "#E8DCCB" },
+    { id: "black", title: "Black", swatch: "#2B2326" },
+    { id: "gold", title: "Gold", swatch: "#E8C07D" }
+  ],
+  scents: [
+    { id: "vanilla", title: "Vanilla", emoji: "🍦" },
+    { id: "floral", title: "Floral", emoji: "🌸" },
+    { id: "citrus", title: "Citrus", emoji: "🍋" },
+    { id: "woodsy", title: "Woodsy", emoji: "🌲" },
+    { id: "fresh", title: "Fresh", emoji: "🌊" },
+    { id: "none", title: "No Scents", emoji: "🚫" }
+  ],
+  snacks: [
+    { id: "sweet", title: "Sweet", emoji: "🍬" },
+    { id: "salty", title: "Salty", emoji: "🥨" },
+    { id: "chocolate", title: "Chocolate", emoji: "🍫" },
+    { id: "healthy", title: "Healthy", emoji: "🥑" },
+    { id: "coffeeTea", title: "Coffee & Tea", emoji: "☕️" }
+  ]
+};
+
+const byId = (list, id) => list.find(o => o.id === id);
+const ordered = (list, set) => list.filter(o => set.has(o.id)).map(o => o.id);
+
+/* ---------- Words used to write the "why" ---------- */
+const COPY = {
+  describedAs: { cozy: "a cozy homebody", adventurer: "an adventurer at heart", creative: "a creative soul", foodie: "a true foodie", fitness: "a fitness lover", bookworm: "a devoted bookworm", glam: "a glamorous soul", techie: "a gadget lover" },
+  side: { cozy: "homebody", adventurer: "adventurous", creative: "creative", foodie: "foodie", fitness: "active", bookworm: "bookworm", glam: "glamorous", techie: "techie" },
+  dateTwist: {
+    cozy: "Make it theirs with a blanket fort, candles and their favorite comfort food.",
+    adventurer: "Make it theirs with a sunrise hike or a drive somewhere neither of you has been.",
+    creative: "Make it theirs with a paint-and-sip night at home where you paint each other.",
+    foodie: "Make it theirs with dinner at the restaurant they keep talking about.",
+    fitness: "Make it theirs with a bike ride or a long walk, then smoothies after.",
+    bookworm: "Make it theirs with a bookstore date where you each pick a book for the other.",
+    glam: "Make it theirs with a dress-up dinner somewhere with candlelight.",
+    techie: "Make it theirs with a stargazing night using a star-map app and a thermos of cocoa."
+  },
+  who: { words: "lights up at heartfelt words", gifts: "treasures a thoughtful surprise", time: "feels most loved with your undivided time", touch: "feels closest through hugs and cuddles", acts: "notices every little thing you do to make life easier" },
+  basketPhrase: { words: "how much words mean to them", gifts: "how much they love opening something thoughtful", time: "how much they treasure time together", touch: "how much they love closeness", acts: "how much little acts of care mean to them" },
+  llShort: { words: "words of affirmation", gifts: "receiving gifts", time: "quality time", touch: "physical touch", acts: "acts of service" },
+  dateIdea: {
+    words: "Take them somewhere quiet and read your love note to them out loud.",
+    gifts: "Plan a little scavenger hunt around the house that ends at the gift basket.",
+    time: "Plan a phone-free evening that's only about the two of you.",
+    touch: "Plan a slow evening: a back rub, a slow dance in the kitchen and a long walk holding hands.",
+    acts: "Take one chore off their plate for a week, then plan a night where you handle every detail."
+  },
+  occasionFit: { birthday: "It's a birthday gift they'll remember.", anniversary: "It's a beautiful way to celebrate another year of you two.", valentines: "It's made for Valentine's Day.", justBecause: "It's the best kind of \"just because.\"", apology: "It's a gentle, sincere way to say you're sorry.", holiday: "It's something warm and lovely to unwrap this season." },
+  occasionShort: { birthday: "their birthday", anniversary: "your anniversary", valentines: "Valentine's Day", justBecause: "a just-because surprise", apology: "saying sorry", holiday: "the holidays" },
+  lookingBack: { new: "not long ago,", underOneYear: "less than a year ago,", oneToThree: "a couple of years ago,", threePlus: "all those years ago," },
+  tissue: { red: "deep red", pink: "blush pink", lavender: "lavender", blue: "soft blue", green: "sage green", yellow: "buttery yellow", neutral: "ivory", black: "black", gold: "shimmery gold" },
+  colorName: { red: "red", pink: "pink", lavender: "lavender", blue: "blue", green: "green", yellow: "yellow", neutral: "neutral", black: "black", gold: "gold" },
+  garnish: { vanilla: "a whole vanilla bean tied to the ribbon", floral: "a few dried rose petals", citrus: "a couple of dried orange slices", woodsy: "a cinnamon stick and a sprig of pine", fresh: "a sprig of fresh eucalyptus" },
+  scentNote: { vanilla: "warm vanilla", floral: "floral", citrus: "bright citrus", woodsy: "woodsy", fresh: "fresh, clean" },
+  snackLove: { sweet: "their sweet tooth", salty: "their love of salty snacks", chocolate: "their chocolate cravings", healthy: "their healthy habits", coffeeTea: "their coffee and tea ritual" }
+};
+
+function loveNote(occasion, name, length) {
+  switch (occasion) {
+    case "birthday": return `Dear ${name}, happy birthday to my favorite person. This year I loved watching you ______, and my wish for you is ______.`;
+    case "anniversary": return `Dear ${name}, ${COPY.lookingBack[length]} I had no idea how much you would change my life. My favorite memory of us is ______, and the thing I can't wait for next is ______.`;
+    case "valentines": return `Dear ${name}, you're my Valentine because ______. The little thing you do that still makes me melt is ______.`;
+    case "apology": return `Dear ${name}, I'm sorry for ______. You deserved ______, and from now on I'm going to ______. Thank you for ______.`;
+    case "holiday": return `Dear ${name}, my favorite gift this year was ______. Here's to more ______ together in the new year.`;
+    default: return `Dear ${name}, no special reason today. I just wanted you to know I love the way you ______, and I feel so lucky that ______.`;
+  }
+}
+
+const joinNaturally = a => a.length <= 1 ? (a[0] || "") : a.length === 2 ? `${a[0]} and ${a[1]}` : `${a.slice(0, -1).join(", ")} and ${a[a.length - 1]}`;
+const capFirst = s => s.charAt(0).toUpperCase() + s.slice(1);
+const dollars = n => "$" + Math.round(n);
+
+/* ---------- Text matching (dislikes & hobbies) ---------- */
+const STOP = new Set(("i a an the of to and or in on with for at my their them they she he her his is are be very really too much any anything stuff thing things no not dont don doesnt doesn like likes love loves hate hates dislike dislikes allergic allergy allergies cant can eat eating kind kinds type types all some strong lot lots").split(" "));
+function stem(w) {
+  w = w.toLowerCase();
+  if (w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) w = w.slice(0, -1);
+  return w;
+}
+const words = t => t.toLowerCase().split(/[^a-zÀ-ɏ]+/).filter(Boolean);
+const stemmedTokens = t => new Set(words(t).map(stem));
+const phrases = t => t.toLowerCase().replace(/ and /g, ",").split(/[,;\/\n&+]/).map(s => s.trim()).filter(Boolean);
+const meaningful = p => words(p).filter(w => w.length > 2 && !STOP.has(w)).map(stem);
+
+const DISLIKE_RELATED = {
+  nut: ["nut", "peanut", "almond", "pecan", "walnut", "cashew", "pistachio", "hazelnut", "macaron"],
+  peanut: ["peanut", "trail mix"], almond: ["almond", "macaron", "biscotti"],
+  dairy: ["dairy", "milk", "cheese", "butter"], lactose: ["dairy", "milk", "cheese", "butter"], milk: ["dairy", "milk"],
+  cheese: ["cheese", "charcuterie"], gluten: ["gluten", "wheat", "pasta", "cracker", "cookie", "biscotti", "pretzel"],
+  wheat: ["gluten", "wheat"], egg: ["egg", "macaron"], soy: ["soy"], chocolate: ["chocolate", "cocoa", "truffle"],
+  caffeine: ["caffeine", "coffee", "espresso", "matcha", "tea"], coffee: ["coffee", "espresso"], tea: ["tea", "matcha"],
+  sugar: ["sugar", "candy", "caramel", "gummie", "marshmallow", "syrup"],
+  sweet: ["sugar", "candy", "caramel", "gummie", "marshmallow", "chocolate", "cookie", "macaron"],
+  candy: ["candy", "gummie", "sugar"], gelatin: ["gelatin", "gummie", "marshmallow"],
+  spicy: ["spicy", "chili", "hot sauce", "hot honey"], flower: ["flower", "rose", "bouquet", "pollen", "floral"],
+  pollen: ["flower", "rose", "bouquet", "pollen", "plant"], plant: ["plant", "succulent", "herb"],
+  latex: ["latex"], wool: ["wool"], lavender: ["lavender"], candle: ["candle", "votive"],
+  jewelry: ["jewelry", "necklace", "ring"], metal: ["metal", "nickel"], nickel: ["nickel", "metal"],
+  makeup: ["makeup", "lip", "nail polish"], alcohol: ["alcohol", "wine"], height: ["heights", "balloon"],
+  cooking: ["cooking", "kitchen", "pasta"], honey: ["honey"]
+};
+const SCENT_WORDS = new Set(["scent", "scented", "fragrance", "fragrant", "perfume", "smell", "smelly"]);
+
+function makeDislikeFilter(text) {
+  const terms = new Set();
+  let blockScented = false;
+  for (const p of phrases(text)) {
+    const ws = meaningful(p);
+    if (!ws.length) continue;
+    if (ws.some(w => SCENT_WORDS.has(w))) blockScented = true;
+    if (ws.length > 1) terms.add(ws.join(" "));
+    for (const w of ws) { terms.add(w); (DISLIKE_RELATED[w] || []).forEach(t => terms.add(t)); }
+  }
+  const hit = (text, tokens) => {
+    for (const t of terms) {
+      if (t.includes(" ")) { if (text.includes(t)) return true; }
+      else if (tokens.has(stem(t))) return true;
+    }
+    return false;
+  };
+  return {
+    excludes(item) {
+      if (blockScented && (item.s.length || item._tokens.has("fragrance"))) return true;
+      return hit(item._text, item._tokens);
+    },
+    excludesText(t) {
+      const lower = t.toLowerCase();
+      if (blockScented && [...SCENT_WORDS].some(w => lower.includes(w))) return true;
+      return hit(lower, stemmedTokens(lower));
+    }
+  };
+}
+
+const HOBBY_RELATED = {
+  hiking: ["hiking", "hike", "trail", "camping", "outdoor"], hike: ["hiking", "trail", "camping"],
+  camping: ["camping", "campfire", "hiking", "headlamp"], reading: ["reading", "book", "novel"],
+  book: ["reading", "book", "novel", "bookstore"], cooking: ["cooking", "kitchen", "recipe", "pasta", "spice"],
+  baking: ["baking", "cookie", "recipe", "kitchen"], gaming: ["gaming", "game", "puzzle", "tech"],
+  game: ["gaming", "game", "puzzle"], video: ["gaming", "tech"], yoga: ["yoga", "mat", "recovery"],
+  running: ["running", "workout"], gym: ["gym", "workout", "protein", "fitness"], workout: ["gym", "workout"],
+  lifting: ["gym", "workout", "protein"], painting: ["paint", "painting", "watercolor", "art"],
+  drawing: ["drawing", "sketchbook", "pencil", "art"], art: ["art", "paint", "sketchbook", "illustration"],
+  music: ["music", "speaker", "playlist", "concert", "earbud"], concert: ["concert", "music"],
+  movie: ["movie", "projector", "popcorn", "streaming"], film: ["movie", "film", "camera"],
+  travel: ["travel", "map", "trip", "getaway"], traveling: ["travel", "map", "trip", "getaway"],
+  photography: ["photography", "camera", "photo", "film"], photo: ["photography", "camera", "photo"],
+  gardening: ["gardening", "plant", "garden", "herb"], plant: ["plant", "gardening", "succulent"],
+  makeup: ["makeup", "lip", "beauty"], skincare: ["skincare", "mask", "roller", "beauty"],
+  beauty: ["beauty", "makeup", "skincare"], fashion: ["fashion", "silk", "satin", "scarf", "jewelry"],
+  shopping: ["fashion", "jewelry", "beauty"], coffee: ["coffee"], tea: ["tea"],
+  dancing: ["dance", "dancing"], dance: ["dance", "dancing"],
+  craft: ["crafts", "embroidery", "clay", "candle", "washi"], crafting: ["crafts", "embroidery", "clay", "candle", "washi"],
+  writing: ["writing", "journal", "letter", "notebook"], journaling: ["journaling", "journal", "notebook", "washi"],
+  pottery: ["pottery", "clay"], knitting: ["knit", "wool"], sewing: ["sewing", "embroidery"],
+  beach: ["beach", "water", "sunscreen", "kayak"], swimming: ["swimming", "water", "beach"], surfing: ["beach", "water"],
+  climbing: ["climbing", "carabiner"], spa: ["spa", "massage", "bath"], food: ["food", "cooking", "charcuterie", "chocolate"],
+  eating: ["food", "charcuterie"], wine: ["charcuterie", "cheese"], tech: ["tech"], coding: ["tech"],
+  sleeping: ["sleep", "pillowcase"], napping: ["sleep", "blanket"]
+};
+
+function makeHobbyMatcher(text) {
+  const hobbies = phrases(text).map(p => {
+    const ws = meaningful(p);
+    if (!ws.length) return null;
+    const terms = new Set(ws);
+    for (const w of ws) {
+      (HOBBY_RELATED[w] || []).forEach(t => terms.add(t));
+      if (w.endsWith("ing") && w.length > 5) terms.add(w.slice(0, -3));
+    }
+    return { label: p, terms: [...terms].map(stem) };
+  }).filter(Boolean);
+  return item => {
+    for (const h of hobbies) {
+      const hit = h.terms.some(t => item._tokens.has(t) || (t.length >= 4 && [...item._tokens].some(tok => tok.startsWith(t))));
+      if (hit) return h.label;
+    }
+    return null;
+  };
+}
+
+/* Precompute search text for every catalog item once. */
+for (const item of [...GIFTS, ...BASKET_ITEMS]) {
+  item._text = [item.name, ...item.k, ...item.s].join(" ").toLowerCase();
+  item._tokens = stemmedTokens(item._text);
+  item._coupon = item._tokens.has("coupon");
+}
+const FALLBACK_GIFT = {
+  name: "A handwritten love letter", detail: "Two pages, your handwriting, a little perfume or a pressed flower inside",
+  price: 0, kind: "keepsake", p: [], l: ["words"], o: [], s: [], c: [], sn: [], k: ["letter", "paper"], sent: 1,
+  hook: "nothing in a store can say what your own words can"
+};
+FALLBACK_GIFT._text = "a handwritten love letter letter paper"; FALLBACK_GIFT._tokens = stemmedTokens(FALLBACK_GIFT._text);
+
+/* ---------- Item icons & "why" tags ---------- */
+const ICON_RULES = [
+  [/truffle sea salt/, "🧂"], [/bath salt|bath soak|bath bomb|steamer/, "🫧"], [/book light/, "💡"], [/scrunchie|hair|headband|pearl hair clips/, "🎀"],
+  [/jam\b/, "🍯"], [/trail mix/, "🥜"], [/headlamp/, "🔦"], [/brush pens/, "🖊️"], [/balsamic|vinegar/, "🫙"], [/annotating/, "🔖"],
+  [/perfume/, "🌸"], [/\blip/, "💄"], [/picnic tote/, "🧺"], [/screen cleaner/, "🧼"], [/sticker/, "✨"],
+  [/coupon|ticket/, "🎟️"], [/letter|envelope|open when|note|playlist card|recipe card/, "💌"], [/52 reasons|jar of/, "🫙"],
+  [/candle|votive/, "🕯️"], [/sock/, "🧦"], [/slipper/, "🥿"], [/hot chocolate|cocoa/, "☕"], [/mug|frother|pour-over|french press|espresso|coffee|café/, "☕"],
+  [/matcha|teapot|\btea\b|\bchai\b|earl grey|chamomile/, "🍵"], [/marshmallow/, "🍡"], [/s'mores|campfire/, "🔥"],
+  [/strawberr|berries/, "🍓"], [/cupcake/, "🧁"], [/macaron/, "🧁"], [/cookie|biscotti|shortbread/, "🍪"],
+  [/truffle|chocolate|fig/, "🍫"], [/caramel|candy|gumm|sour|heart candies|cotton candy/, "🍬"], [/popcorn/, "🍿"],
+  [/chips|pretzel|cracker|baguette|bread|snack crate/, "🥨"], [/honey|syrup|jam/, "🍯"], [/olive oil/, "🫒"], [/salt/, "🧂"],
+  [/spice|hot sauce|pickles|pasta sauce/, "🌶️"], [/cheese|charcuterie|serving board/, "🧀"], [/lemonade|cider|rosé/, "🥂"],
+  [/trail mix|granola|nut mix|dried fruit/, "🥜"], [/protein bar/, "🍫"], [/electrolyte/, "⚡"], [/smoothie/, "🥤"],
+  [/bottle|tumbler|shaker/, "🥤"], [/blanket|throw/, "🧶"], [/pillow|pillowcase/, "🛏️"], [/robe|hoodie|jacket/, "🧥"],
+  [/towel/, "🧺"], [/bath bomb|steamer|soak|bath salt/, "🫧"], [/bath tray/, "🛁"], [/face mask|sheet face/, "🧖"],
+  [/roller|massage|foam/, "💆"], [/hand cream|lotion|scrub|oil|balm|sunscreen|diffuser/, "🧴"],
+  [/nail/, "💅"], [/perfume/, "🌸"], [/highlighter|brush|makeup/, "💄"], [/mirror/, "🪞"], [/scarf|bandana/, "🧣"],
+  [/scrunchie|hair|headband|clips/, "🎀"], [/earring|necklace/, "💎"], [/sleep mask/, "😴"],
+  [/flower|bouquet|rose|seed/, "💐"], [/photo printer|instant film|camera/, "📷"], [/photo|album|frame|star map|trail map/, "🖼️"],
+  [/journal|notebook|sketchbook|sticky notes/, "📓"], [/bookmark|annotating|book sleeve/, "🔖"], [/book light/, "💡"],
+  [/book|paperback|hardcover|tote/, "📚"], [/pencil|pen/, "🖊️"], [/paint|watercolor|canvas|linocut|gold leaf/, "🎨"],
+  [/clay/, "🏺"], [/washi|sticker/, "✨"], [/puzzle|card game|game/, "🧩"], [/speaker/, "🔊"], [/power bank|charging|charge|cable|plug/, "🔌"],
+  [/earbud/, "🎧"], [/phone/, "📱"], [/key/, "🔑"], [/headlamp|lights|lamp/, "💡"], [/hand warmer/, "🧤"], [/first-aid|first aid/, "🩹"],
+  [/carabiner|binocular|compass/, "🧭"], [/band/, "💪"], [/utensil|plates|bowls|knife/, "🍽️"], [/picnic tote|picnic blanket/, "🧺"],
+  [/gift card|streaming|pizza/, "🎁"], [/sand|shell/, "🐚"]
+];
+function itemIcon(item) {
+  const n = item.name.toLowerCase();
+  for (const [re, icon] of ICON_RULES) if (re.test(n)) return icon;
+  return "🎁";
+}
+const TAG_NAMES = {
+  ll: { words: "Words", gifts: "Gifts", time: "Quality time", touch: "Touch", acts: "Acts of service" },
+  p: { cozy: "Cozy", adventurer: "Adventurer", creative: "Creative", foodie: "Foodie", fitness: "Active", bookworm: "Bookworm", glam: "Glam", techie: "Techie" },
+  s: { vanilla: "Vanilla", floral: "Floral", citrus: "Citrus", woodsy: "Woodsy", fresh: "Fresh" },
+  sn: { sweet: "Sweet tooth", salty: "Salty snacks", chocolate: "Chocolate", healthy: "Healthy", coffeeTea: "Coffee & tea" }
+};
+function itemTags(m, P) {
+  const tags = [];
+  m.personalities.forEach(p => tags.push(TAG_NAMES.p[p]));
+  if (m.loveLanguage) tags.push(TAG_NAMES.ll[P.loveLanguage]);
+  if (m.hobby) tags.push(capFirst(m.hobby));
+  m.scents.forEach(s => tags.push(TAG_NAMES.s[s]));
+  m.snacks.forEach(s => tags.push(TAG_NAMES.sn[s]));
+  m.colors.forEach(c => tags.push(capFirst(COPY.colorName[c])));
+  if (m.occasion) tags.push(byId(OPTIONS.occasion, P.occasion).title);
+  return tags.slice(0, 3);
+}
+
+/* ---------- Scoring ---------- */
+const W = {
+  loveLanguage: 30, personality: 22, extraPersonality: 6, generalPersonality: 5,
+  occasion: 15, generalOccasion: 6, scent: 8, snack: 8, color: 6, hobby: 12, style: 10,
+  noScentPenalty: 25, giftPrice: 8, basketPrice: 7, themePersonality: 70, themeLoveLanguage: 20
+};
+
+function buildProfile(a) {
+  const name = (a.partnerName || "").trim();
+  const display = name ? capFirst(name) : "your partner";
+  return {
+    a, display, sentenceName: capFirst(display),
+    occasion: a.occasion || "justBecause", length: a.length || "underOneYear",
+    budget: byId(OPTIONS.budget, a.budget || "fifty"), loveLanguage: a.loveLanguage || "time",
+    personalities: ordered(OPTIONS.personality, a.personalities),
+    colors: ordered(OPTIONS.colors, a.colors),
+    scents: ordered(OPTIONS.scents, a.scents).filter(s => s !== "none"),
+    noScents: a.scents.has("none"),
+    snacks: ordered(OPTIONS.snacks, a.snacks),
+    filter: makeDislikeFilter(a.dislikes || ""), hobby: makeHobbyMatcher(a.hobbies || ""),
+    sentiment: a.sentimentality
+  };
+}
+
+function match(item, P) {
+  const m = { score: 0, loveLanguage: false, personalities: [], occasion: false, scents: [], colors: [], snacks: [], hobby: null };
+  if (item.l.includes(P.loveLanguage)) { m.loveLanguage = true; m.score += W.loveLanguage; }
+  m.personalities = P.personalities.filter(p => item.p.includes(p));
+  if (m.personalities.length) m.score += W.personality + W.extraPersonality * (m.personalities.length - 1);
+  else if (!item.p.length) m.score += W.generalPersonality;
+  if (item.o.includes(P.occasion)) { m.occasion = true; m.score += W.occasion; }
+  else if (!item.o.length) m.score += W.generalOccasion;
+  if (P.noScents) { if (item.s.length) m.score -= W.noScentPenalty; }
+  else { m.scents = P.scents.filter(s => item.s.includes(s)); if (m.scents.length) m.score += W.scent; }
+  m.colors = P.colors.filter(c => item.c.includes(c)); if (m.colors.length) m.score += W.color;
+  m.snacks = P.snacks.filter(s => item.sn.includes(s)); if (m.snacks.length) m.score += W.snack;
+  const hobby = P.hobby(item); if (hobby) { m.hobby = hobby; m.score += W.hobby; }
+  m.score += W.style * (1 - Math.abs(item.sent - P.sentiment));
+  if (P.length === "new") { if (item.sent > 0.85) m.score -= 6; if (item.price > 150) m.score -= 4; }
+  else if (P.length === "oneToThree") m.score += 2 * item.sent;
+  else if (P.length === "threePlus") m.score += 4 * item.sent;
+  return m;
+}
+
+function rankGifts(P) {
+  const limit = P.budget.limit;
+  return GIFTS.filter(g => g.price <= limit && !P.filter.excludes(g))
+    .map(g => { const m = match(g, P); m.score += W.giftPrice * Math.min(g.price / limit, 1); return { gift: g, m }; })
+    .sort((x, y) => y.m.score - x.m.score || x.gift.name.localeCompare(y.gift.name));
+}
+
+function whyItFits(gift, m, P) {
+  const name = P.sentenceName, hook = gift.hook, out = [];
+  const traits = m.personalities.slice(0, 2).map(p => COPY.describedAs[p]);
+  if (traits.length && m.loveLanguage) out.push(`${name} is ${joinNaturally(traits)} who ${COPY.who[P.loveLanguage]}, so this is a natural fit: ${hook}.`);
+  else if (traits.length) out.push(`${name} is ${joinNaturally(traits)}, and this is a natural fit: ${hook}.`);
+  else if (m.loveLanguage) out.push(`${name} ${COPY.who[P.loveLanguage]}, and ${hook}.`);
+  else out.push(`${capFirst(hook)}.`);
+  const extras = [];
+  if (m.scents[0]) extras.push(`the ${COPY.scentNote[m.scents[0]]} scents they love`);
+  if (m.colors.length) extras.push(`their favorite ${joinNaturally(m.colors.slice(0, 2).map(c => COPY.colorName[c]))} tones`);
+  if (m.snacks[0]) extras.push(COPY.snackLove[m.snacks[0]]);
+  if (m.hobby) extras.push(`their love of ${m.hobby}`);
+  if (extras.length) out.push(`Bonus: it plays right into ${joinNaturally(extras.slice(0, 3))}.`);
+  if (m.occasion) out.push(COPY.occasionFit[P.occasion]);
+  if (P.sentiment >= 0.65 && gift.sent >= 0.65) out.push("And since you wanted something heartfelt, it's one they'll keep for years.");
+  else if (P.sentiment <= 0.35 && gift.sent <= 0.4) out.push("Plus, it's genuinely useful, so they'll reach for it again and again.");
+  return out.join(" ");
+}
+
+function shortReason(m, P) {
+  const p = m.personalities[0];
+  if (p && m.loveLanguage) return `Fits their ${COPY.side[p]} side and speaks ${COPY.llShort[P.loveLanguage]}.`;
+  if (p) return `Perfect for their ${COPY.side[p]} side.`;
+  if (m.loveLanguage) return `Speaks their love language: ${COPY.llShort[P.loveLanguage]}.`;
+  if (m.hobby) return `A sweet nod to their love of ${m.hobby}.`;
+  if (m.occasion) return `Lovely for ${COPY.occasionShort[P.occasion]}.`;
+  return "A sweet runner-up that fits your budget.";
+}
+
+function chooseBackups(ranked, topKind, P) {
+  const picks = [], used = new Set([topKind]);
+  for (const r of ranked) if (picks.length < 2 && !used.has(r.gift.kind)) { picks.push(r); used.add(r.gift.kind); }
+  for (const r of ranked) if (picks.length < 2 && !picks.includes(r)) picks.push(r);
+  return picks.map(r => ({ gift: r.gift, reason: shortReason(r.m, P) }));
+}
+
+/* Greedy fill: best items first, only if the cheapest remaining items can still reach the minimum. */
+function fillBasket(cands, budget, minimum, maximum) {
+  if (cands.length < minimum) return null;
+  const remaining = cands.slice(), chosen = [];
+  let spent = 0;
+  while (chosen.length < maximum) {
+    const need = Math.max(minimum - chosen.length - 1, 0);
+    const hasCoupon = chosen.some(c => c.item._coupon);
+    let pick = -1;
+    for (let i = 0; i < remaining.length; i++) {
+      const c = remaining[i], price = c.item.price;
+      if (spent + price > budget) continue;
+      if (hasCoupon && c.item._coupon) continue;
+      if (chosen.length >= minimum && c.score < chosen[0].score * 0.45) continue;
+      const couponUsed = hasCoupon || c.item._coupon;
+      const others = remaining.filter((o, j) => j !== i && !(couponUsed && o.item._coupon)).map(o => o.item.price).sort((x, y) => x - y).slice(0, need);
+      if (others.length < need) continue;
+      if (spent + price + others.reduce((s, v) => s + v, 0) <= budget) { pick = i; break; }
+    }
+    if (pick < 0) break;
+    const [c] = remaining.splice(pick, 1);
+    chosen.push(c); spent += c.item.price;
+  }
+  return chosen.length >= minimum ? chosen : null;
+}
+
+function buildBasket(P) {
+  const [containerName, containerPrice] = P.budget.container;
+  const itemBudget = P.budget.limit - containerPrice, target = itemBudget / P.budget.max;
+  const scored = BASKET_ITEMS.filter(i => !P.filter.excludes(i)).map(i => {
+    const m = match(i, P);
+    // Inside a basket, love language matters a little less than for a single gift, so the theme follows their personality.
+    return { item: i, m, score: m.score - (m.loveLanguage ? 12 : 0) + W.basketPrice * (1 - Math.min(Math.abs(i.price - target) / target, 1)) };
+  });
+  const tries = [];
+  for (let n = P.budget.min; n >= 3; n--) tries.push(n);
+  for (const minimum of tries) {
+    let best = null;
+    for (const theme of BASKET_THEMES) {
+      const cands = scored.filter(s => s.item.themes.includes(theme.id))
+        .sort((x, y) => y.score - x.score || x.item.price - y.item.price);
+      const items = fillBasket(cands, itemBudget, minimum, P.budget.max);
+      if (!items) continue;
+      let total = items.reduce((s, x) => s + x.score, 0);
+      if (theme.p.some(p => P.a.personalities.has(p))) total += W.themePersonality;
+      if (theme.l.includes(P.loveLanguage)) total += W.themeLoveLanguage;
+      if (!best || total > best.total) best = { theme, items, total };
+    }
+    if (best) {
+      const items = best.items.map(x => ({ ...x.item, icon: itemIcon(x.item), tags: itemTags(x.m, P) }));
+      const total = containerPrice + items.reduce((s, i) => s + i.price, 0);
+      return { theme: best.theme, container: { name: containerName, price: containerPrice, kind: P.budget.kind }, items, total,
+               used: Math.min(total / P.budget.limit, 1), why: basketWhy(best.theme, P) };
+    }
+  }
+  return null;
+}
+
+function basketWhy(theme, P) {
+  const reasons = [];
+  const p = P.personalities.find(x => theme.p.includes(x));
+  if (p) reasons.push(`their ${COPY.side[p]} side`);
+  if (theme.l.includes(P.loveLanguage)) reasons.push(COPY.basketPhrase[P.loveLanguage]);
+  if (!reasons.length) return `${theme.tagline} It scored highest across everything you told us about ${P.display}.`;
+  return `${theme.tagline} Picked for ${P.display} because it matches ${joinNaturally(reasons)}.`;
+}
+
+function romanticTouch(P, basket) {
+  let date = COPY.dateIdea[P.loveLanguage];
+  if (P.personalities[0]) date += " " + COPY.dateTwist[P.personalities[0]];
+  const containerName = (basket ? basket.container.name : "gift box").toLowerCase();
+  const tissue = P.colors[0] ? COPY.tissue[P.colors[0]] : "blush pink";
+  let tip = `Nestle everything into the ${containerName} on a bed of ${tissue} tissue, tie it with a soft gold ribbon, and tuck your handwritten note on top so it's the first thing ${P.display} sees.`;
+  const s = P.scents[0];
+  if (s && !P.noScents && !P.filter.excludesText(COPY.garnish[s])) tip += ` Add ${COPY.garnish[s]} for a sweet surprise when they open it.`;
+  return { note: loveNote(P.occasion, P.display, P.length), date, tip };
+}
+
+function recommend(answers) {
+  const P = buildProfile(answers);
+  const ranked = rankGifts(P);
+  const top = ranked[0] || { gift: FALLBACK_GIFT, m: match(FALLBACK_GIFT, P) };
+  const basket = buildBasket(P);
+  const result = {
+    name: P.display,
+    occasion: byId(OPTIONS.occasion, P.occasion),
+    budget: P.budget,
+    top: { gift: top.gift, reason: whyItFits(top.gift, top.m, P) },
+    backups: chooseBackups(ranked.slice(1), top.gift.kind, P),
+    basket,
+    romance: romanticTouch(P, basket)
+  };
+  result.shareText = shareText(result);
+  return result;
+}
+
+function shareText(r) {
+  const L = [];
+  L.push(`💝 Little Love Notes for ${r.name}`);
+  L.push(`${r.occasion.title} · Budget ${r.budget.title}`, "");
+  L.push("THE PERFECT GIFT", `${r.top.gift.name} (about ${dollars(r.top.gift.price)})`, r.top.reason);
+  if (r.backups.length) L.push("Backup ideas: " + r.backups.map(b => `${b.gift.name} (${dollars(b.gift.price)})`).join(", "));
+  if (r.basket) {
+    L.push("", `YOUR GIFT BASKET: ${r.basket.theme.title.toUpperCase()}`, `• ${r.basket.container.name}: ${dollars(r.basket.container.price)}`);
+    r.basket.items.forEach(i => L.push(`• ${i.name}: ${dollars(i.price)}`));
+    L.push(`Total: ${dollars(r.basket.total)}`);
+  }
+  L.push("", "MAKE IT ROMANTIC", `Love note: ${r.romance.note}`, `Date idea: ${r.romance.date}`, `Presentation: ${r.romance.tip}`);
+  return L.join("\n");
+}
+
+/* ===== Basket illustration: drawn from the real items, the real container and their favorite color ===== */
+
+const TISSUE_HEX = { red: "#E58A98", pink: "#F4B8C3", lavender: "#CDBDEB", blue: "#B9D5EE", green: "#BFD6B6",
+  yellow: "#F7E3A1", neutral: "#F1E6D6", black: "#5A4E54", gold: "#EFD08F" };
+
+function mixHex(a, b, t) {
+  const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const A = p(a), B = p(b);
+  return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join("");
+}
+const svgEsc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+let artUid = 0;
+
+/**
+ * opts: { icons: string[], kind: "bag"|"basket"|"crate", tissue: colorId, name: string, title: string }
+ */
+function basketArt(opts) {
+  const id = "a" + (++artUid);
+  const kind = opts.kind || "basket";
+  const icons = opts.icons || [];
+  const tissue = TISSUE_HEX[opts.tissue] || TISSUE_HEX.pink;
+  const tissueLight = mixHex(tissue, "#FFFFFF", 0.45);
+  const tissueDark = mixHex(tissue, "#7A2E3A", 0.18);
+
+  // Container geometry: where the opening is.
+  const G = {
+    bag:    { x1: 176, x2: 424, rim: 300 },
+    basket: { x1: 124, x2: 476, rim: 330 },
+    crate:  { x1: 112, x2: 488, rim: 322 }
+  }[kind];
+  const cx = 300;
+
+  const defs = `
+  <defs>
+    <radialGradient id="${id}glow" cx="50%" cy="55%" r="55%">
+      <stop offset="0" stop-color="#FFFDF8" stop-opacity="1"/><stop offset=".6" stop-color="#FFF4F0" stop-opacity=".7"/><stop offset="1" stop-color="#FFF4F0" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="${id}weave" width="36" height="22" patternUnits="userSpaceOnUse">
+      <rect width="36" height="22" fill="#B98552"/>
+      <rect x="1" y="1.5" width="16" height="8" rx="4" fill="#E2B27A"/><rect x="19" y="1.5" width="16" height="8" rx="4" fill="#D29E66"/>
+      <rect x="-8" y="12.5" width="16" height="8" rx="4" fill="#D29E66"/><rect x="10" y="12.5" width="16" height="8" rx="4" fill="#E2B27A"/>
+      <rect x="28" y="12.5" width="16" height="8" rx="4" fill="#D29E66"/>
+    </pattern>
+    <linearGradient id="${id}shade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5A2A1E" stop-opacity=".28"/><stop offset=".25" stop-color="#5A2A1E" stop-opacity="0"/>
+      <stop offset=".75" stop-color="#5A2A1E" stop-opacity="0"/><stop offset="1" stop-color="#5A2A1E" stop-opacity=".3"/>
+    </linearGradient>
+    <linearGradient id="${id}kraft" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#D9B48A"/><stop offset="1" stop-color="#C39A6C"/>
+    </linearGradient>
+    <linearGradient id="${id}wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E3BF8E"/><stop offset="1" stop-color="#C9995F"/>
+    </linearGradient>
+    <linearGradient id="${id}ribbon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F3D9A4"/><stop offset=".5" stop-color="#E8C07D"/><stop offset="1" stop-color="#C99A4E"/>
+    </linearGradient>
+    <linearGradient id="${id}tag" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFDF8"/><stop offset="1" stop-color="#FCE9EA"/>
+    </linearGradient>
+    <filter id="${id}soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#7A2E3A" flood-opacity=".22"/>
+    </filter>
+    <filter id="${id}item" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#5A1E2A" flood-opacity=".28"/>
+    </filter>
+  </defs>`;
+
+  const heart = (x, y, s, fill, op = 1) =>
+    `<path transform="translate(${x} ${y}) scale(${s})" opacity="${op}" fill="${fill}" d="M12 6.2C10.6 2.2 6.5 1 4 2.6 1.1 4.4 1 8.6 3.6 11.5 6 14.2 9.4 16.6 12 20.6c2.6-4 6-6.4 8.4-9.1 2.6-2.9 2.5-7.1-.4-8.9C17.5 1 13.4 2.2 12 6.2z"/>`;
+  const spark = (x, y, s, fill) =>
+    `<path transform="translate(${x} ${y}) scale(${s})" fill="${fill}" d="M12 0Q13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4 12 0z"/>`;
+
+  // Backdrop
+  let back = `<circle cx="300" cy="320" r="270" fill="url(#${id}glow)"/>
+    <ellipse cx="300" cy="548" rx="${kind === "bag" ? 150 : 205}" ry="20" fill="#7A2E3A" opacity=".13"/>
+    ${spark(70, 140, 1.1, "#E8C07D")}${spark(510, 96, .8, "#E8C07D")}${spark(528, 300, .6, "#D4919A")}${spark(52, 380, .55, "#D4919A")}
+    ${heart(472, 160, 1.3, "#D4919A", .55)}${heart(92, 250, 1, "#E8C07D", .6)}${heart(520, 420, .8, "#D4919A", .4)}`;
+
+  // Back part of the container (behind the tissue and items)
+  if (kind === "basket") {
+    back += `
+    <path d="M136 332 C 128 104, 472 104, 464 332" fill="none" stroke="#8E5A31" stroke-width="24" stroke-linecap="round"/>
+    <path d="M136 332 C 128 104, 472 104, 464 332" fill="none" stroke="#D29E66" stroke-width="15" stroke-linecap="round"/>
+    <path d="M136 332 C 128 104, 472 104, 464 332" fill="none" stroke="#E9BD86" stroke-width="5" stroke-linecap="round" stroke-dasharray="14 10"/>
+    <ellipse cx="300" cy="${G.rim}" rx="178" ry="40" fill="#7B4A27"/>`;
+  } else if (kind === "bag") {
+    back += `
+    <path d="M232 296 C 226 196, 374 196, 368 296" fill="none" stroke="#A47B4E" stroke-width="9" stroke-linecap="round"/>
+    <path d="M176 300 L196 282 L404 282 L424 300 Z" fill="#B38A5C"/>`;
+  } else {
+    back += `
+    <rect x="${G.x1 + 6}" y="${G.rim - 44}" width="${G.x2 - G.x1 - 12}" height="52" rx="6" fill="#B07D45"/>
+    <rect x="${G.x1 + 6}" y="${G.rim - 44}" width="${G.x2 - G.x1 - 12}" height="10" rx="5" fill="#C99A5E"/>`;
+  }
+
+  // Tissue paper fanning out of the opening
+  const petals = 7;
+  let tissueSvg = "";
+  const spread = (G.x2 - G.x1) * 0.5;
+  for (let i = 0; i < petals; i++) {
+    const t = i / (petals - 1), a = (-58 + 116 * t) * Math.PI / 180;
+    const L = 150 + (i % 2 ? 26 : 0);
+    const bx = cx + (t - 0.5) * spread * 1.5, by = G.rim + 6;
+    const tx = bx + Math.sin(a) * L, ty = by - Math.cos(a) * L;
+    const w = 46;
+    const fill = i % 2 ? tissueLight : tissue;
+    tissueSvg += `<path d="M${bx - w} ${by} Q ${(bx + tx) / 2 - w * .9} ${(by + ty) / 2} ${tx} ${ty} Q ${(bx + tx) / 2 + w * .9} ${(by + ty) / 2} ${bx + w} ${by} Z" fill="${fill}" stroke="${tissueDark}" stroke-opacity=".25" stroke-width="1.5"/>`;
+  }
+
+  // Items: two rows peeking out of the opening
+  let itemsSvg = "";
+  const n = icons.length;
+  if (n) {
+    const backN = Math.ceil(n / 2), frontN = n - backN;
+    const big = n > 8 ? 82 : n > 6 ? 90 : 98;
+    const width = G.x2 - G.x1 - 30;
+    const row = (count, size, baseY, left, right, startIdx) => {
+      let out = "";
+      for (let i = 0; i < count; i++) {
+        const x = left + (right - left) * ((i + 0.5) / count);
+        const wobble = ((startIdx + i) % 3 - 1) * 8;
+        const rot = [-12, 9, -5, 13, -9, 6, -14, 10, -4, 8][(startIdx + i) % 10];
+        const y = baseY + wobble;
+        out += `<g class="it" style="animation-delay:${((startIdx + i) * 0.13).toFixed(2)}s"><text x="${x.toFixed(1)}" y="${y}" font-size="${size}" text-anchor="middle" transform="rotate(${rot} ${x.toFixed(1)} ${y - size * .35})" filter="url(#${id}item)" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif">${icons[startIdx + i]}</text></g>`;
+      }
+      return out;
+    };
+    const lift = n > 6 ? 62 : n > 4 ? 50 : 36;
+    itemsSvg = row(backN, big, G.rim - lift, G.x1 - 4, G.x2 + 4, 0)
+             + row(frontN, Math.round(big * 0.9), G.rim + 4, G.x1 + 34, G.x2 - 34, backN);
+  }
+
+  // Front of the container
+  let front = "";
+  if (kind === "basket") {
+    front = `
+    <path d="M122 330 L478 330 L446 514 Q300 548 154 514 Z" fill="url(#${id}weave)"/>
+    <path d="M122 330 L478 330 L446 514 Q300 548 154 514 Z" fill="url(#${id}shade)"/>
+    <path d="M154 514 Q300 548 446 514" fill="none" stroke="#8E5A31" stroke-width="10" stroke-linecap="round"/>
+    <path d="M122 330 A178 40 0 0 0 478 330" fill="none" stroke="#9C6537" stroke-width="22" stroke-linecap="round"/>
+    <path d="M122 330 A178 40 0 0 0 478 330" fill="none" stroke="#D9A46A" stroke-width="12" stroke-linecap="round"/>
+    <path d="M122 330 A178 40 0 0 0 478 330" fill="none" stroke="#F0C994" stroke-width="3" stroke-linecap="round" stroke-dasharray="12 9"/>
+    <path d="M134 412 Q300 448 466 412" fill="none" stroke="url(#${id}ribbon)" stroke-width="16"/>`;
+  } else if (kind === "bag") {
+    front = `
+    <path d="M176 300 L424 300 L436 532 L164 532 Z" fill="url(#${id}kraft)"/>
+    <path d="M176 300 L424 300 L436 532 L164 532 Z" fill="url(#${id}shade)"/>
+    <path d="M176 300 L424 300 L425 320 L175 320 Z" fill="#E4C49C"/>
+    <path d="M300 300 L300 532" stroke="#B38A5C" stroke-width="1.5" opacity=".4"/>
+    ${heart(278, 400, 1.9, "#D4919A", .9)}`;
+  } else {
+    const planks = [0, 1, 2, 3].map(i => {
+      const y = G.rim + i * 52;
+      return `<rect x="${G.x1}" y="${y}" width="${G.x2 - G.x1}" height="48" rx="5" fill="url(#${id}wood)"/>
+        <path d="M${G.x1 + 30} ${y + 18} q 60 -6 120 2 t 130 -2" fill="none" stroke="#A9773F" stroke-width="1.6" opacity=".45"/>`;
+    }).join("");
+    front = `${planks}
+    <rect x="${G.x1}" y="${G.rim}" width="${G.x2 - G.x1}" height="204" fill="url(#${id}shade)"/>
+    <rect x="${G.x1 - 6}" y="${G.rim - 6}" width="30" height="214" rx="6" fill="#B98552"/>
+    <rect x="${G.x2 - 24}" y="${G.rim - 6}" width="30" height="214" rx="6" fill="#B98552"/>
+    ${[G.x1 + 9, G.x2 - 9].map(x => [G.rim + 14, G.rim + 186].map(y => `<circle cx="${x}" cy="${y}" r="3.5" fill="#7B4A27"/>`).join("")).join("")}
+    <path d="M${G.x1 + 24} ${G.rim + 100} H ${G.x2 - 24}" stroke="url(#${id}ribbon)" stroke-width="16"/>
+    ${heart(281, G.rim + 132, 1.6, "#7A2E3A", .55)}`;
+  }
+
+  // Bow and gift tag
+  const bowX = kind === "bag" ? 214 : kind === "crate" ? 160 : 170;
+  const bowY = kind === "bag" ? 318 : kind === "crate" ? G.rim + 4 : 392;
+  const bow = `
+    <g transform="translate(${bowX} ${bowY})" filter="url(#${id}soft)">
+      <path d="M0 0 C -46 -40, -64 6, -8 8 Z" fill="url(#${id}ribbon)"/>
+      <path d="M0 0 C 46 -40, 64 6, 8 8 Z" fill="url(#${id}ribbon)"/>
+      <path d="M-4 6 L -24 54 L -12 50 L -6 62 Z" fill="#D9AE63"/>
+      <path d="M4 6 L 22 52 L 10 49 L 6 60 Z" fill="#D9AE63"/>
+      <circle r="10" fill="#E8C07D" stroke="#C99A4E" stroke-width="2"/>
+    </g>`;
+  const name = (opts.name || "").trim();
+  const tagLabel = name ? `For ${name}` : "For you";
+  const tagSize = tagLabel.length > 12 ? 24 : 30;
+  const tag = `
+    <path d="M${bowX + 6} ${bowY + 6} C ${bowX + 40} ${bowY + 60}, ${bowX + 60} ${bowY + 70}, ${bowX + 74} ${bowY + 92}" fill="none" stroke="#C99A4E" stroke-width="2"/>
+    <g transform="translate(${bowX + 70} ${bowY + 86}) rotate(-8)" filter="url(#${id}soft)">
+      <path d="M0 12 L18 0 H150 Q158 0 158 8 V48 Q158 56 150 56 H18 L0 44 Z" fill="url(#${id}tag)" stroke="#E8C07D" stroke-width="2"/>
+      <circle cx="16" cy="28" r="4.5" fill="#FFFDF8" stroke="#C99A4E" stroke-width="2"/>
+      <text x="88" y="38" text-anchor="middle" font-size="${tagSize}" fill="#7A2E3A" font-family="'Great Vibes','Snell Roundhand','Apple Chancery',cursive">${svgEsc(tagLabel.length > 16 ? tagLabel.slice(0, 15) + "…" : tagLabel)}</text>
+    </g>`;
+
+  const label = opts.title ? `${svgEsc(opts.title)} gift basket` : "Gift basket";
+  return `<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${label}">${defs}${back}${tissueSvg}${itemsSvg}${front}${bow}${tag}</svg>`;
+}
+
+/* ===== Little Love Notes: screens and interactions ===== */
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const HEART_D = "M12 6.2C10.6 2.2 6.5 1 4 2.6 1.1 4.4 1 8.6 3.6 11.5 6 14.2 9.4 16.6 12 20.6c2.6-4 6-6.4 8.4-9.1 2.6-2.9 2.5-7.1-.4-8.9C17.5 1 13.4 2.2 12 6.2z";
+  const heart = (w, fill) => `<svg width="${w}" height="${Math.round(w * .92)}" viewBox="0 0 24 22" aria-hidden="true"><use href="#heartPath" fill="${fill}"/></svg>`;
+  const badge = s => `<svg class="badge" width="${s}" height="${s}" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="14" fill="url(#wineFill)" stroke="#FFF8F0" stroke-width="2"/><g transform="translate(8.6 9.4) scale(.53)"><path d="${HEART_D}" fill="#FFF8F0"/></g></svg>`;
+  const arrow = `<svg width="16" height="14" viewBox="0 0 16 14" aria-hidden="true"><path d="M1 7h13M9 2l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isWide = () => window.matchMedia("(min-width: 920px)").matches;
+  function haptic(p = 8) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) { /* not supported */ } }
+  document.addEventListener("click", e => { if (e.target.closest("button")) haptic(); }, true);
+
+  /* ---------- Questions ---------- */
+  const STEPS = [
+    { id: "name", ch: 0, title: () => "Who's the lucky one?", sub: "Their first name goes on the gift tag and the love note." },
+    { id: "occasion", ch: 0, title: () => "What's the occasion?", sub: "Some treats only make sense for certain moments." },
+    { id: "length", ch: 0, title: () => "How long have you been together?", sub: "New love gets lighter touches. Longer love gets more keepsakes." },
+    { id: "budget", ch: 0, title: () => "What's your budget?", sub: "The whole basket stays inside it, the basket itself included. Bigger budgets get more items." },
+    { id: "loveLanguage", ch: 1, title: n => `How does ${n} feel most loved?`, sub: "This is the biggest clue. It decides most of what goes in." },
+    { id: "personality", ch: 1, title: n => `What is ${n} like?`, sub: "Pick everything that fits. This picks the basket's theme." },
+    { id: "hobbies", ch: 1, title: () => "What do they love to do?", sub: "Type a few, separated by commas, or tap the quick picks." },
+    { id: "style", ch: 1, title: () => "Sentimental or practical?", sub: "Slide toward what they'd treasure more." },
+    { id: "colors", ch: 2, title: () => "Colors they love?", sub: "Used for the tissue paper and to break ties. Optional." },
+    { id: "scents", ch: 2, title: () => "Scents they love?", sub: "Pick all that apply, or \"No scents\" to leave candles and perfume out." },
+    { id: "snacks", ch: 2, title: () => "Favorite treats?", sub: "Pick any. Optional." },
+    { id: "dislikes", ch: 2, title: () => "Anything to leave out?", sub: "Dislikes or allergies. Anything that matches is removed from the basket." }
+  ];
+  const CHAPTERS = ["The basics", "Who they are", "Little details"];
+  const AUTO = new Set(["occasion", "length", "budget", "loveLanguage"]);
+  const OPTIONAL = new Set(["colors", "snacks", "hobbies", "dislikes"]);
+  const HOBBY_CHIPS = ["Hiking", "Reading", "Cooking", "Baking", "Music", "Gaming", "Yoga", "Painting", "Travel", "Coffee", "Movies", "Gym"];
+  const DISLIKE_CHIPS = ["Nuts", "Dairy", "Gluten", "Chocolate", "Strong scents", "Caffeine", "Flowers", "Spicy food"];
+
+  const fresh = () => ({ partnerName: "", occasion: null, length: null, budget: null, loveLanguage: null,
+    personalities: new Set(), colors: new Set(), scents: new Set(), snacks: new Set(), hobbies: "", dislikes: "", sentimentality: 0.6 });
+  let A = fresh(), step = 0, forward = true, autoTimer = null, R = null, saved = false;
+  const nameOf = () => { const n = A.partnerName.trim(); return n ? n.charAt(0).toUpperCase() + n.slice(1) : "your partner"; };
+  const tissueOf = a => (OPTIONS.colors.find(c => a.colors.has(c.id)) || {}).id || "pink";
+  const artFor = (r, a) => basketArt({ icons: r.basket ? r.basket.items.map(i => i.icon) : [], kind: r.basket ? r.basket.container.kind : "basket",
+    tissue: tissueOf(a), name: r.name === "your partner" ? "" : r.name, title: r.basket ? r.basket.theme.title : "" });
+
+  /* ---------- Screens ---------- */
+  function show(id) {
+    for (const s of ["welcome", "quiz", "loading", "results"]) $(s).hidden = s !== id;
+    const el = $(id); el.classList.remove("screen-in"); void el.offsetWidth; el.classList.add("screen-in");
+    if (id === "welcome") startHearts(); else stopHearts();
+  }
+
+  /* ---------- Welcome ---------- */
+  function renderWelcome() {
+    // A hand-picked example so the first thing people see is a cute, full basket.
+    $("welcome-art").innerHTML = basketArt({ icons: ["🕯️", "🧶", "🍫", "☕", "🧦", "💌", "🍪"], kind: "basket", tissue: "pink", name: "", title: "Cozy Night In" });
+    $("welcome-caption").innerHTML = `<span class="pill-chip">Example · <b>Cozy Night In</b> · 7 treats · <span class="num">$50</span></span>`;
+  }
+
+  /* ---------- Quiz ---------- */
+  function canAdvance() {
+    switch (STEPS[step].id) {
+      case "name": return A.partnerName.trim().length > 0;
+      case "occasion": return !!A.occasion; case "length": return !!A.length;
+      case "budget": return !!A.budget; case "loveLanguage": return !!A.loveLanguage;
+      case "personality": return A.personalities.size > 0; case "scents": return A.scents.size > 0;
+      default: return true;
+    }
+  }
+  function emptyOptional() {
+    const k = STEPS[step].id;
+    return (k === "colors" && !A.colors.size) || (k === "snacks" && !A.snacks.size) || (k === "hobbies" && !A.hobbies.trim()) || (k === "dislikes" && !A.dislikes.trim());
+  }
+  function updateFooter() {
+    const last = step === STEPS.length - 1, b = $("next-btn");
+    const label = last ? "Build my basket" : (OPTIONAL.has(STEPS[step].id) && emptyOptional() ? "Skip" : "Next");
+    b.innerHTML = last ? `${heart(16, "#FFF8F0")}${label}` : `${label}${arrow}`;
+    b.disabled = !canAdvance();
+    $("foot-hint").textContent = AUTO.has(STEPS[step].id) ? "Tap an answer to keep going" : (STEPS[step].id === "personality" ? "You can pick more than one" : "");
+  }
+  function renderProgress() {
+    const ch = STEPS[step].ch;
+    $("chapters").innerHTML = CHAPTERS.map((name, i) => {
+      const inCh = STEPS.filter(s => s.ch === i), done = inCh.filter(s => STEPS.indexOf(s) < step).length;
+      const fill = i < ch ? 100 : i > ch ? 0 : Math.round(((done + 1) / inCh.length) * 100);
+      return `<div class="chapter ${i === ch ? "now" : ""}"><span>${name}</span><i><b style="--fill:${fill}%"></b></i></div>`;
+    }).join("");
+    $("chapters").setAttribute("aria-valuenow", step + 1);
+    $("chapters").setAttribute("aria-label", `Question ${step + 1} of ${STEPS.length}: ${CHAPTERS[ch]}`);
+  }
+
+  const card = (o, on, tile) => `
+    <button type="button" class="card ${tile ? "tile" : ""}" data-id="${o.id}" aria-pressed="${on}">
+      ${o.swatch ? `<span class="sw" style="background:${o.swatch}"></span>` : `<span class="em">${o.emoji}</span>`}
+      <span style="display:grid;gap:3px;min-width:0"><span class="t">${esc(o.title)}</span>${o.sub ? `<span class="s">${esc(o.sub)}</span>` : ""}</span>
+      ${badge(26)}
+    </button>`;
+  const field = (id, ph, val, multi) => `
+    <label class="field" for="${id}">${heart(17, "url(#wineFill)")}
+      ${multi ? `<textarea id="${id}" rows="2" placeholder="${esc(ph)}">${esc(val)}</textarea>`
+              : `<input id="${id}" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" maxlength="30" placeholder="${esc(ph)}" value="${esc(val)}">`}
+    </label>`;
+  const chipRow = (list, text) => `<div><div class="chips-label">Quick picks</div><div class="chips">${list.map(c => {
+    const on = phrases(text).includes(c.toLowerCase());
+    return `<button type="button" class="chip" data-chip="${esc(c)}" aria-pressed="${on}">${on ? heart(11, "#7A2E3A") : "+"} ${esc(c)}</button>`; }).join("")}</div></div>`;
+  const mood = v => v < .25 ? ["🧰", "Totally practical", "Useful things they'll reach for every day."] : v < .45 ? ["☕️", "Mostly practical", "Useful, with a little sweetness."]
+    : v < .6 ? ["⚖️", "A perfect balance", "Useful, but still personal."] : v < .8 ? ["💝", "Mostly sentimental", "Heartfelt, with a practical side."] : ["💌", "Totally sentimental", "Keepsakes and heartfelt surprises."];
+
+  function renderQuestion() {
+    const S = STEPS[step], k = S.id;
+    let body = "";
+    const opts = { occasion: OPTIONS.occasion, length: OPTIONS.length, budget: OPTIONS.budget, loveLanguage: OPTIONS.loveLanguage };
+    if (k === "name") body = field("name-input", "Their first name", A.partnerName, false);
+    else if (k === "occasion" || k === "length" || k === "loveLanguage") body = `<div class="cards ${isWide() && k === "occasion" ? "g2" : ""}">${opts[k].map(o => card(o, A[k] === o.id, false)).join("")}</div>`;
+    else if (k === "budget") body = `<div class="cards g2">${OPTIONS.budget.map(o => card(o, A.budget === o.id, true)).join("")}</div>`;
+    else if (k === "personality") body = `<div class="cards ${isWide() ? "g2" : "g2"}">${OPTIONS.personality.map(o => card(o, A.personalities.has(o.id), true)).join("")}</div>`;
+    else if (k === "colors") body = `<div class="cards g3">${OPTIONS.colors.map(o => card(o, A.colors.has(o.id), true)).join("")}</div>`;
+    else if (k === "scents") body = `<div class="cards g3">${OPTIONS.scents.map(o => card(o, A.scents.has(o.id), true)).join("")}</div>`;
+    else if (k === "snacks") body = `<div class="cards g3">${OPTIONS.snacks.map(o => card(o, A.snacks.has(o.id), true)).join("")}</div>`;
+    else if (k === "hobbies") body = `<div style="display:grid;gap:18px">${field("hobbies-input", "Hiking, baking, video games…", A.hobbies, true)}<div id="chips">${chipRow(HOBBY_CHIPS, A.hobbies)}</div></div>`;
+    else if (k === "dislikes") body = `<div style="display:grid;gap:18px">${field("dislikes-input", "Peanuts, lavender, anything spicy…", A.dislikes, true)}<div id="chips">${chipRow(DISLIKE_CHIPS, A.dislikes)}</div></div>`;
+    else if (k === "style") {
+      const [e, t, d] = mood(A.sentimentality), v = Math.round(A.sentimentality * 100);
+      body = `<div class="style-box"><div><div class="big" id="mood-e">${e}</div><h3 id="mood-t">${t}</h3><p class="muted" id="mood-d" style="margin-top:6px;font-size:15px">${d}</p></div>
+        <div><input class="range" id="style-range" type="range" min="0" max="100" value="${v}" aria-label="Sentimental or practical" style="--val:${v}%">
+        <div class="range-labels"><span>Practical</span><span>Sentimental</span></div></div></div>`;
+    }
+    const q = $("question");
+    q.className = "question " + (reduceMotion ? "" : forward ? "in-fwd" : "in-back");
+    q.innerHTML = `<div class="q-head"><span class="eyebrow">${CHAPTERS[S.ch]} · ${step + 1} of ${STEPS.length}</span><h2>${esc(S.title(nameOf()))}</h2><p>${esc(S.sub)}</p></div>${body}`;
+    $("quiz-panel").scrollTop = 0;
+    renderProgress(); updateFooter(); wire(k);
+  }
+
+  function wire(k) {
+    const q = $("question");
+    if (k === "name") {
+      const inp = $("name-input");
+      inp.addEventListener("input", () => { A.partnerName = inp.value; updateFooter(); scheduleLive(); });
+      inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); next(); } });
+      setTimeout(() => { try { inp.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }, 300);
+    }
+    if (k === "hobbies" || k === "dislikes") {
+      const inp = $(k + "-input"), list = k === "hobbies" ? HOBBY_CHIPS : DISLIKE_CHIPS;
+      const chips = () => { $("chips").innerHTML = chipRow(list, A[k]); };
+      inp.addEventListener("input", () => { A[k] = inp.value; chips(); updateFooter(); scheduleLive(); });
+      $("chips").addEventListener("click", e => {
+        const b = e.target.closest("[data-chip]"); if (!b) return;
+        const w = b.dataset.chip, cur = phrases(A[k]);
+        if (cur.includes(w.toLowerCase())) A[k] = cur.filter(x => x !== w.toLowerCase()).map(x => x.charAt(0).toUpperCase() + x.slice(1)).join(", ");
+        else { const t = A[k].trim(); A[k] = t ? t + (t.endsWith(",") ? " " : ", ") + w : w; }
+        inp.value = A[k]; chips(); updateFooter(); scheduleLive();
+      });
+    }
+    if (k === "style") {
+      const r = $("style-range"); let last = Math.round(A.sentimentality * 10);
+      r.addEventListener("input", () => {
+        A.sentimentality = r.value / 100; r.style.setProperty("--val", r.value + "%");
+        const [e, t, d] = mood(A.sentimentality); $("mood-e").textContent = e; $("mood-t").textContent = t; $("mood-d").textContent = d;
+        const tick = Math.round(A.sentimentality * 10); if (tick !== last) { last = tick; haptic(4); }
+        scheduleLive();
+      });
+    }
+    q.querySelectorAll(".card").forEach(btn => btn.addEventListener("click", () => {
+      const id = btn.dataset.id;
+      if (AUTO.has(k)) {
+        A[k] = id; q.querySelectorAll(".card").forEach(c => c.setAttribute("aria-pressed", c.dataset.id === id));
+        clearTimeout(autoTimer); const at = step; autoTimer = setTimeout(() => { if (step === at) next(); }, 450);
+      } else {
+        const set = { personality: A.personalities, colors: A.colors, snacks: A.snacks, scents: A.scents }[k];
+        if (k === "scents") {
+          if (id === "none") { const had = set.has("none"); set.clear(); if (!had) set.add("none"); }
+          else { set.delete("none"); set.has(id) ? set.delete(id) : set.add(id); }
+          q.querySelectorAll(".card").forEach(c => c.setAttribute("aria-pressed", set.has(c.dataset.id)));
+        } else { set.has(id) ? set.delete(id) : set.add(id); btn.setAttribute("aria-pressed", set.has(id)); }
+      }
+      updateFooter(); scheduleLive();
+    }));
+  }
+
+  function next() {
+    if (!canAdvance()) return;
+    clearTimeout(autoTimer);
+    if (step === STEPS.length - 1) return finish();
+    forward = true; step++; renderQuestion();
+  }
+  function back() {
+    clearTimeout(autoTimer);
+    if (step === 0) { show("welcome"); return; }
+    forward = false; step--; renderQuestion();
+  }
+
+  /* ---------- Live basket preview while answering ---------- */
+  let liveRaf = null, liveCount = -1;
+  function scheduleLive() { cancelAnimationFrame(liveRaf); liveRaf = requestAnimationFrame(renderLive); }
+  function renderLive() {
+    const ready = A.loveLanguage || A.personalities.size;
+    const r = ready ? recommend(A) : null;
+    const svg = r ? artFor(r, A) : basketArt({ icons: [], kind: byId(OPTIONS.budget, A.budget || "fifty").kind, tissue: tissueOf(A), name: A.partnerName.trim() ? nameOf() : "" });
+    const art = $("live-art");
+    const n = r && r.basket ? r.basket.items.length : 0;
+    art.innerHTML = svg + (r ? "" : `<span class="empty-hint">It fills up as you answer</span>`);
+    if (n !== liveCount && !reduceMotion) { art.classList.remove("pop-in"); void art.offsetWidth; art.classList.add("pop-in"); }
+    liveCount = n;
+    const b = byId(OPTIONS.budget, A.budget || "fifty");
+    $("live-caption").innerHTML = r && r.basket
+      ? `<span class="pill-chip"><b>${esc(r.basket.theme.title)}</b></span><span class="pill-chip num">${n} items · ${dollars(r.basket.total)} of ${A.budget ? b.title : "$50"}</span>`
+      : `<span class="pill-chip">${A.budget ? `Budget <b>${b.title}</b> · about ${b.min}–${b.max} items` : "Pick a budget to size your basket"}</span>`;
+    $("mini-basket").innerHTML = `<span class="thumb">${svg}</span><span class="num">${n ? n + " items" : "Basket"}</span>`;
+    if (!$("preview-layer").hidden) { $("preview-art").innerHTML = svg; $("preview-caption").innerHTML = $("live-caption").innerHTML; }
+  }
+
+  /* ---------- Loading ---------- */
+  let dotTimer = null;
+  function finish() {
+    const r = recommend(A);
+    $("loading-art").innerHTML = artFor(r, A);
+    show("loading");
+    let dots = 0; clearInterval(dotTimer);
+    dotTimer = setInterval(() => { dots = (dots + 1) % 4; $("loading-text").textContent = "Wrapping up something special" + ".".repeat(dots); }, 380);
+    const wait = Math.max(2200, (r.basket ? r.basket.items.length : 5) * 130 + 1100);
+    setTimeout(() => { clearInterval(dotTimer); R = { ...r, answers: A, ai: null, view: "drawn" }; saved = false; haptic([10, 40, 14]); renderResults(); show("results"); }, wait);
+  }
+
+  /* ---------- Results ---------- */
+  function renderArt() {
+    const art = $("result-art");
+    if (R.view === "ai" && R.ai) art.innerHTML = `<img alt="AI painting of the ${esc(R.basket ? R.basket.theme.title : "")} gift basket" src="${R.ai}">`;
+    else art.innerHTML = artFor(R, R.answers);
+    $("art-tabs").hidden = !R.ai;
+    $("tab-drawn").setAttribute("aria-selected", R.view !== "ai");
+    $("tab-ai").setAttribute("aria-selected", R.view === "ai");
+  }
+
+  function renderResults() {
+    const r = R, b = r.basket, n = r.name;
+    renderArt(); refreshAI();
+    $("result-caption").innerHTML = b ? `<span class="pill-chip">For <b>${esc(n)}</b></span><span class="pill-chip num">${b.items.length} items · ${dollars(b.total)}</span>` : "";
+    const gifts = [{ ...r.top, best: true }, ...r.backups];
+    $("res").innerHTML = `
+      <header class="res-head">
+        <span class="eyebrow">${esc(r.occasion.emoji)} ${esc(r.occasion.title)} basket for ${esc(n)}</span>
+        <h1>${b ? esc(b.theme.title) : "A love letter"}</h1>
+        ${b ? `<p class="lede muted">${esc(b.why)}</p>` : `<p class="lede muted">Nothing in our catalog fit what to leave out, so the sweetest gift is your own words.</p>`}
+      </header>
+      ${b ? `
+      <div class="summary">
+        <div class="summary-row"><span class="big num">${dollars(b.total)}</span><span class="muted num">for ${b.items.length} items and the ${esc(b.container.name.toLowerCase())}, out of your ${esc(r.budget.title)} budget</span></div>
+        <div class="meter" aria-hidden="true"><i style="--used:${Math.round(b.used * 100)}%"></i></div>
+      </div>
+      <section class="sec" aria-labelledby="inside-h">
+        <div class="sec-title"><h2 id="inside-h">What's inside</h2><span class="script">filled with love</span></div>
+        <ul class="items">
+          <li class="item container"><span class="ic" aria-hidden="true">${b.container.kind === "bag" ? "🛍️" : b.container.kind === "crate" ? "📦" : "🧺"}</span>
+            <div><div class="nm">${esc(b.container.name)}</div><div class="tags"><span>To hold it all</span></div></div><span class="pr num">${dollars(b.container.price)}</span></li>
+          ${b.items.map(i => `<li class="item"><span class="ic" aria-hidden="true">${i.icon}</span>
+            <div style="min-width:0"><div class="nm">${esc(i.name)}</div>${i.tags.length ? `<div class="tags">${i.tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>` : ""}</div>
+            <span class="pr num">${dollars(i.price)}</span></li>`).join("")}
+        </ul>
+        <p class="muted" style="font-size:14px">Prices are typical store prices, so yours may differ a little. The pink tags show which of your answers each item matches.</p>
+      </section>` : ""}
+      <section class="sec" aria-labelledby="gift-h">
+        <div class="sec-title"><h2 id="gift-h">Rather give one gift?</h2><span class="script">or add one on top</span></div>
+        <div class="gifts">${gifts.map(g => `<article class="gift ${g.best ? "best" : ""}">
+          ${g.best ? `<span class="flag">Best match</span>` : ""}<h3>${esc(g.gift.name)}</h3><span class="pr num">about ${dollars(g.gift.price)}</span>
+          <p>${esc(g.gift.detail)}</p></article>`).join("")}</div>
+        <p class="why-best"><b>Why the best match fits:</b> ${esc(r.top.reason)}</p>
+      </section>
+      <section class="sec" aria-labelledby="rom-h">
+        <div class="sec-title"><h2 id="rom-h">Make it romantic</h2><span class="script">the little touches</span></div>
+        <article class="letter"><span class="eyebrow">Love note to finish</span><p>${esc(r.romance.note)}</p>
+          <div class="sign"><button type="button" class="mini" id="copy-note">Copy note</button><span class="script">with love, always</span></div></article>
+        <div class="tips">
+          <article class="tip"><span class="eyebrow">🌙 Date idea</span><p>${esc(r.romance.date)}</p></article>
+          <article class="tip"><span class="eyebrow">🎀 How to wrap it</span><p>${esc(r.romance.tip)}</p></article>
+        </div>
+      </section>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="save-btn">${heart(16, "#FFF8F0")}<span>Save basket</span></button>
+        <button type="button" class="btn btn-ghost" id="share-btn">Share</button>
+        <button type="button" class="btn btn-ghost" id="restart-btn">Start over</button>
+      </div>
+      <button type="button" class="link" id="res-saved" style="justify-self:center">See saved baskets</button>`;
+    $("results-panel").scrollTop = 0; $("results-split").scrollTop = 0;
+    $("copy-note").addEventListener("click", () => copyText(r.romance.note, "Love note copied"));
+    $("share-btn").addEventListener("click", () => share(r.shareText, `Gift basket for ${n}`));
+    $("restart-btn").addEventListener("click", () => { abortPaint(); R = null; show("welcome"); });
+    $("res-saved").addEventListener("click", openSheet);
+    $("save-btn").addEventListener("click", saveResult);
+    refreshSave();
+  }
+  $("tab-drawn").addEventListener("click", () => { R.view = "drawn"; renderArt(); });
+  $("tab-ai").addEventListener("click", () => { R.view = "ai"; renderArt(); });
+
+  /* ---------- AI painting (uses Claude when the page is opened on claude.ai) ---------- */
+  let sampleFn = null, paintCtl = null, paintTimer = null;
+  (async () => {
+    try { if (window.claude && typeof window.claude.use === "function") { sampleFn = await window.claude.use("sample"); refreshAI(); } }
+    catch (e) { sampleFn = null; }
+  })();
+  function refreshAI() { $("ai-row").hidden = !(sampleFn && R && R.basket); }
+  function paintPrompt() {
+    const b = R.basket, color = byId(OPTIONS.colors, tissueOf(R.answers));
+    return `Paint a charming illustration of a gift basket as ONE standalone SVG image.
+
+What to draw:
+- Container: ${b.container.name}.
+- Theme: "${b.theme.title}".
+- These items must be clearly visible and recognizable, tucked into the container: ${b.items.map(i => i.name).join("; ")}.
+- Tissue paper in ${color ? color.title.toLowerCase() : "blush pink"} fanning out behind the items, a soft gold satin bow, and a small paper gift tag that reads "For ${R.name === "your partner" ? "you" : R.name}".
+- Background: warm cream (#FFF8F0) with a soft blush (#F8D7DA) glow, a few tiny gold sparkles and small hearts.
+
+Style: polished, romantic storybook flat illustration with soft gradients and gentle shadows. Palette accents: blush #F8D7DA, dusty rose #D4919A, deep wine #7A2E3A, soft gold #E8C07D, plus natural colors for each item. Draw every item with shapes; do not use emoji or text other than the tag.
+
+Rules: viewBox="0 0 800 800", valid SVG only, no <script>, no <foreignObject>, no <image>, no external links or fonts, no event attributes. Keep it under about 60 KB. Reply with only the SVG markup, starting with <svg and ending with </svg>.`;
+  }
+  function abortPaint() { if (paintCtl) paintCtl.abort(); paintCtl = null; clearInterval(paintTimer); }
+  async function paint() {
+    if (!sampleFn || !R || paintCtl) return;
+    const r = R, art = $("result-art"), btn = $("ai-btn");
+    paintCtl = new AbortController();
+    const started = Date.now();
+    art.insertAdjacentHTML("beforeend", `<div class="painting" id="painting"><div><div class="brush">🖌️</div>
+      <h3 style="font-size:22px;margin-top:8px">Painting your basket…</h3><p class="muted" id="paint-status" style="font-size:14.5px;margin-top:6px">Waiting for Claude</p>
+      <button type="button" class="mini" id="paint-stop" style="margin-top:14px">Stop</button></div></div>`);
+    $("paint-stop").addEventListener("click", abortPaint);
+    btn.disabled = true;
+    let chars = 0;
+    paintTimer = setInterval(() => {
+      const s = Math.round((Date.now() - started) / 1000), st = $("paint-status");
+      if (st) st.textContent = chars ? `Adding details… ${Math.round(chars / 1000)} KB drawn · ${s}s` : `Sketching ideas… ${s}s`;
+    }, 500);
+    try {
+      const res = await sampleFn(paintPrompt(), { signal: paintCtl.signal, onText: ({ text }) => { chars = text.length; } });
+      const m = res.text.match(/<svg[\s\S]*<\/svg>/i);
+      if (!m) throw { code: "no_svg" };
+      if (R !== r) return;
+      r.ai = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(m[0]);
+      r.view = "ai"; renderArt(); toast(`${heart(14, "#FFF8F0")}Your AI painting is ready`);
+      $("ai-note").textContent = "Switch between the drawing and the painting above. Tap Paint again for a new version.";
+    } catch (e) {
+      const code = e && e.code;
+      const p = $("painting"); if (p) p.remove();
+      if (code === "not_granted" || code === "sampling_disabled" || code === "capability_disabled" || code === "not_declared") { sampleFn = null; refreshAI(); }
+      else if (code === "rate_limited") $("ai-note").textContent = "Claude is busy right now. Try again in a little while.";
+      else if (code !== "cancelled") $("ai-note").textContent = "The painting didn't finish. Tap the button to try again.";
+    } finally {
+      clearInterval(paintTimer); paintCtl = null; btn.disabled = false;
+      const p = $("painting"); if (p) p.remove();
+    }
+  }
+  $("ai-btn").addEventListener("click", paint);
+
+  /* ---------- Saved baskets (this browser only) ---------- */
+  const KEY = "little-love-notes:baskets";
+  let memSaved = null;
+  const loadSaved = () => { if (memSaved) return memSaved; try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; } };
+  const storeSaved = list => { try { localStorage.setItem(KEY, JSON.stringify(list)); memSaved = null; } catch (e) { memSaved = list; } };
+  function refreshSave() { const b = $("save-btn"); if (!b) return; b.disabled = saved; b.querySelector("span").textContent = saved ? "Saved" : "Save basket"; }
+  function saveResult() {
+    if (!R || saved) return;
+    const b = R.basket;
+    storeSaved([{ id: Date.now().toString(36), at: new Date().toISOString(), name: R.name, occasion: R.occasion.title,
+      title: b ? b.theme.title : "A love letter", total: b ? b.total : 0, count: b ? b.items.length : 0,
+      icons: b ? b.items.map(i => i.icon) : [], kind: b ? b.container.kind : "basket", tissue: tissueOf(R.answers), text: R.shareText }, ...loadSaved()]);
+    saved = true; refreshSave(); haptic([10, 40, 14]); toast(`${heart(14, "#FFF8F0")}Basket saved`);
+  }
+  const open = new Set();
+  function renderSaved(extra = "") {
+    const list = loadSaved(), box = $("saved-list");
+    if (!list.length) { box.innerHTML = extra + `<div class="empty">${heart(56, "url(#heartFill)")}<h3 style="font-size:22px">No saved baskets yet</h3><p class="muted" style="max-width:30ch">When you build one you love, tap "Save basket" and it'll wait for you here.</p></div>`; return; }
+    box.innerHTML = extra + list.map(f => {
+      const d = new Date(f.at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+      const isOpen = open.has(f.id);
+      return `<article class="fav" data-id="${esc(f.id)}"><div class="thumb">${basketArt({ icons: f.icons, kind: f.kind, tissue: f.tissue, name: f.name === "your partner" ? "" : f.name })}</div>
+        <div style="min-width:0"><h3>${esc(f.title)}</h3><p class="muted" style="font-size:14px">For ${esc(f.name)} · ${esc(f.occasion)} · ${esc(d)}</p>
+        <p class="num" style="font-size:14.5px;margin-top:2px">${f.count} items · ${dollars(f.total)}</p>
+        <div class="btns"><button type="button" class="mini" data-act="toggle" aria-expanded="${isOpen}">${isOpen ? "Hide list" : "See list"}</button>
+        <button type="button" class="mini" data-act="share">Share</button><button type="button" class="mini" data-act="remove">Remove</button></div></div>
+        ${isOpen ? `<div class="fav-full">${esc(f.text)}</div>` : ""}</article>`;
+    }).join("");
+  }
+  $("saved-list").addEventListener("click", e => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    const id = b.closest("[data-id]").dataset.id, f = loadSaved().find(x => x.id === id); if (!f) return;
+    if (b.dataset.act === "toggle") { open.has(id) ? open.delete(id) : open.add(id); renderSaved(); }
+    if (b.dataset.act === "share") share(f.text, `Gift basket for ${f.name}`);
+    if (b.dataset.act === "remove") { storeSaved(loadSaved().filter(x => x.id !== id)); renderSaved(); toast("Removed"); }
+  });
+  function openSheet(extra) {
+    renderSaved(typeof extra === "string" ? extra : "");
+    $("sheet-layer").hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => $("app").classList.add("sheet-open")));
+    setTimeout(() => $("sheet-close").focus({ preventScroll: true }), 300);
+  }
+  function closeSheet() { $("app").classList.remove("sheet-open"); setTimeout(() => { $("sheet-layer").hidden = true; }, reduceMotion ? 0 : 480); }
+  $("sheet-close").addEventListener("click", closeSheet);
+  $("sheet-backdrop").addEventListener("click", closeSheet);
+
+  /* ---------- Preview on phones ---------- */
+  $("mini-basket").addEventListener("click", () => { $("preview-layer").hidden = false; renderLive(); });
+  $("preview-close").addEventListener("click", () => { $("preview-layer").hidden = true; });
+  $("preview-layer").addEventListener("click", e => { if (e.target.id === "preview-layer") $("preview-layer").hidden = true; });
+  document.addEventListener("keydown", e => {
+    if (e.key !== "Escape") return;
+    if (!$("preview-layer").hidden) $("preview-layer").hidden = true;
+    else if (!$("sheet-layer").hidden) closeSheet();
+  });
+
+  /* ---------- Share & copy ---------- */
+  let toastT = null;
+  function toast(html) { const t = $("toast"); t.innerHTML = html; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2300); }
+  function copyBox(text) {
+    openSheet(`<article class="fav" style="grid-template-columns:1fr"><div><span class="eyebrow">Copy this text</span><textarea class="copy-box" id="copy-box" readonly style="margin-top:10px">${esc(text)}</textarea></div></article>`);
+    setTimeout(() => { const c = $("copy-box"); if (c) { c.focus(); c.select(); } }, 350);
+  }
+  function copyText(text, msg) {
+    try {
+      if (!navigator.clipboard) return copyBox(text);
+      navigator.clipboard.writeText(text).then(() => toast(`${heart(14, "#FFF8F0")}${esc(msg)}`), () => copyBox(text));
+    } catch (e) { copyBox(text); }
+  }
+  function share(text, title) {
+    if (navigator.share) navigator.share({ title, text }).catch(err => { if (!err || err.name !== "AbortError") copyText(text, "Copied. Paste it anywhere to share"); });
+    else copyText(text, "Copied. Paste it anywhere to share");
+  }
+
+  /* ---------- Floating hearts behind the welcome basket ---------- */
+  const canvas = $("hearts-canvas"), ctx = canvas.getContext("2d"), hp = new Path2D(HEART_D);
+  const sp = new Path2D("M12 0Q13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4 12 0z");
+  let seed = 14; const rnd = (a, b) => { seed = (seed * 16807) % 2147483647; return a + (seed / 2147483647) * (b - a); };
+  const parts = Array.from({ length: 26 }, (_, i) => ({ x: rnd(.03, .97), size: i % 5 === 0 ? rnd(8, 14) : rnd(12, 30), speed: rnd(.016, .04), phase: rnd(0, 1), sway: rnd(8, 26), alpha: rnd(.22, .55), gold: i % 3 === 0, sp: i % 5 === 0 }));
+  let raf = null;
+  function draw(ms) {
+    const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) { canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    const t = ms / 1000;
+    for (const p of parts) {
+      const prog = (t * p.speed + p.phase) % 1, y = h * (1.08 - prog * 1.2), x = w * p.x + Math.sin(t * .7 + p.phase * 6.28) * p.sway;
+      ctx.globalAlpha = p.alpha * Math.min(prog * 5, 1) * Math.min((1 - prog) * 4, 1);
+      ctx.fillStyle = p.gold ? "#E8C07D" : "#D4919A";
+      ctx.save(); ctx.translate(x - p.size / 2, y - p.size / 2); ctx.scale(p.size / 24, p.size / 24); ctx.fill(p.sp ? sp : hp); ctx.restore();
+    }
+    if (!reduceMotion) raf = requestAnimationFrame(draw);
+  }
+  function startHearts() { if (!raf) raf = requestAnimationFrame(draw); }
+  function stopHearts() { if (raf) cancelAnimationFrame(raf); raf = null; }
+  document.addEventListener("visibilitychange", () => { if (document.hidden) stopHearts(); else if (!$("welcome").hidden) startHearts(); });
+
+  /* ---------- Start ---------- */
+  $("start-btn").addEventListener("click", () => { A = fresh(); step = 0; forward = true; R = null; liveCount = -1; show("quiz"); renderQuestion(); renderLive(); });
+  $("welcome-saved").addEventListener("click", openSheet);
+  $("back-btn").addEventListener("click", back);
+  $("next-btn").addEventListener("click", next);
+  renderWelcome();
+  startHearts();
+})();
+
+</script>
+</body>
+</html>
